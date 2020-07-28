@@ -1,0 +1,7 @@
+file:
+  /home/artspresso/services/front-end:
+    exists: true
+    contains: []
+user:
+  artspresso:
+    exists: true
