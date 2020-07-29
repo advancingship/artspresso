@@ -8,20 +8,22 @@ function useNodeFrame(props) {
     const content = props.content || "";
     const creation_datetime = props.creation_datetime || new Date(Date.now());
     const modification_datetime = props.modification_datetime;
+    const sizing = props.sizing || "full-frame";
 
 
     return [
 	name,
 	content,
 	creation_datetime,
-	modification_datetime
+	modification_datetime,
+	sizing
     ]	
 }
 
 function NodeFrame(props) {
-    const [name, content, creation_datetime, modification_datetime] = useNodeFrame(props);
+    const [name, content, creation_datetime, modification_datetime, sizing] = useNodeFrame(props);
 	return (
-	    <div role="document" className="node-frame">
+		<div role="document" className={"node-frame " + sizing}>
 	      <div className="node-frame-header">
 	        <Form.Group controlId="node-frame-form.control-name">
    	        <Form.Control type="text" aria-label="name"

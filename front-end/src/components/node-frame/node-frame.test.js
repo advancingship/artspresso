@@ -6,8 +6,9 @@ describe("<NodeFrame/> Component", () => {
 
     describe("given no props", () => {
 
+	let container = null;
 	beforeEach(() => {
-	    return render(<NodeFrame />);
+	    container = render(<NodeFrame />).container;
 	});
 
 	it('renders a name field', () => {
@@ -68,6 +69,11 @@ describe("<NodeFrame/> Component", () => {
 		dashed_time
 	    );
 	});
+
+	it("renders with a className for full sizing", () => {
+	    screen.get
+	    expect(container.firstChild).toHaveClass("full-frame");
+	});
     });
     
     describe("given full props", () => {
@@ -77,13 +83,16 @@ describe("<NodeFrame/> Component", () => {
 	const modify_time = new Date(now + 1234567);
 	const name = "xname";
 	const content = "xcontent";
+	const sizing = "base-frame";	
 
+	let container = null;
 	beforeEach(() => {
-	    return render(<NodeFrame
-			  name={name}
-			  content={content}
-			  creation_datetime={create_time}					         modification_datetime={modify_time}
-			  />);
+	    container = render(<NodeFrame
+			       name={name}
+			       content={content}
+			       creation_datetime={create_time}					              modification_datetime={modify_time}
+			       sizing={sizing}
+			       />).container;
 	});
     
 	it('renders a name field', () => {
@@ -144,6 +153,10 @@ describe("<NodeFrame/> Component", () => {
 	    expect(modification_datetime_tag).toHaveTextContent(
 		expected_modify_time_text
 	    );
+	});
+
+	it("renders with a className from the 'sizing' prop", () => {
+	    expect(container.firstChild).toHaveClass("base-frame");
 	});
     });
 });
