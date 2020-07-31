@@ -10,11 +10,12 @@ function App() {
 	  <h1>Artspresso</h1>
 	</div>
         <div className="app-main">	  
-          <NodeFrame></NodeFrame>
+          <NodeFrame />
         </div>
       </header>
     </div>
   );
 }
+
 
 export default App;
