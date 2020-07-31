@@ -1,5 +1,5 @@
-import React from 'react';
-import './app.sass';
+import React from "react";
+import "./app.sass";
 import NodeFrame from "../node-frame";
 
 function App() {
