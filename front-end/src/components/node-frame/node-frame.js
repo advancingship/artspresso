@@ -27,7 +27,7 @@ function NodeFrame(props) {
     const [test_id, name, content, creation_datetime, modification_datetime, sizing, on_click] = useNodeFrame(props);
 
 	return (
-		<div role="document" data-testid={test_id} className={"node-frame " + sizing} name="fred" onClick={on_click}>
+		<div role="document" data-testid={test_id} className={"node-frame " + sizing} onClick={on_click}>
 	      <div className="node-frame-header">
 	        <Form.Group controlId="node-frame-form.control-name">
    	        <Form.Control type="text" aria-label="name"
