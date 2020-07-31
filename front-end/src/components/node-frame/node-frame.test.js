@@ -1,50 +1,55 @@
-import React from 'react';
-import {render, screen, getNodeText} from '@testing-library/react'
-import NodeFrame from './';
-import { DatetimeHelper } from '../../helpers';
+import React from "react";
+import {render, screen, getNodeText, fireEvent} from "@testing-library/react"
+import NodeFrame from "./";
+import { DatetimeHelper } from "../../helpers";
 describe("<NodeFrame/> Component", () => {
 
     describe("given no props", () => {
 
 	let container = null;
 	beforeEach(() => {
-	    container = render(<NodeFrame />).container;
+	    render(<NodeFrame />);
 	});
 
-	it('renders a name field', () => {
-	    const name_field = screen.getByRole('textbox', {name: /name/i});
+	it("renders no test id", () => {
+	    const node_frame = screen.getByRole("document")
+	    expect(node_frame).not.toHaveAttribute("data-testid");
+	});
+
+	it("renders a name field", () => {
+	    const name_field = screen.getByRole("textbox", {name: /name/i});
 	    expect(name_field).toBeInTheDocument();
 	});
 
 	it("displays the name placeholder by having empty value", () => {
-	    const name_field = screen.getByRole('textbox', {name: /name/i});
-	    expect(name_field).toHaveDisplayValue('');
+	    const name_field = screen.getByRole("textbox", {name: /name/i});
+	    expect(name_field).toHaveDisplayValue("");
 	});
 	
-	it('renders a content field', () => {
-	    const content_field = screen.getByRole('textbox',
+	it("renders a content field", () => {
+	    const content_field = screen.getByRole("textbox",
 						   {name: /content/i}
 						  );
 	    expect(content_field).toBeInTheDocument();
 	});
 
-	it('displays the content placeholder by having empty value', () => {
-	    const content_field = screen.getByRole('textbox',
+	it("displays the content placeholder by having empty value", () => {
+	    const content_field = screen.getByRole("textbox",
 						   {name: /content/i}
 						  );
-	    expect(content_field).toHaveDisplayValue('');
+	    expect(content_field).toHaveDisplayValue("");
 	});
 	
 	it("renders a creation datetime", () => {
 	    const creation_datetime_tag = screen.getByRole(
-		'heading', {name: /creation-datetime/}
+		"heading", {name: /creation-datetime/}
 	    );
 	    expect(creation_datetime_tag).toBeInTheDocument();
 	});
 	
 	it("renders the creation datetime from when it was rendered", () => {
 	    const creation_datetime_tag = screen.getByRole(
-		'heading', {name: /creation-datetime/}
+		"heading", {name: /creation-datetime/}
 	    );
 	    const creation_datetime_text = getNodeText(creation_datetime_tag);
 	    const creation_datetime = DatetimeHelper.
@@ -55,32 +60,33 @@ describe("<NodeFrame/> Component", () => {
 	
 	it("renders a modification datetime", () => {
 	    const modification_datetime_tag = screen.getByRole(
-		'heading', {name: /modification-datetime/}
+		"heading", {name: /modification-datetime/}
 	    );
 	    expect(modification_datetime_tag).toBeInTheDocument();
 	});
 	
 	it("renders the modification datetime as dashed-out", () => {
 	    const modification_datetime_tag = screen.getByRole(
-		'heading', {name: /modification-datetime/}
+		"heading", {name: /modification-datetime/}
 	    );
-	    const dashed_time = '-------- --:--:--:---'
+	    const dashed_time = "-------- --:--:--:---"
 	    expect(modification_datetime_tag).toHaveTextContent(
 		dashed_time
 	    );
 	});
 
 	it("renders with a className for full sizing", () => {
-	    screen.get
-	    expect(container.firstChild).toHaveClass("full-frame");
+	    const node_frame = screen.getByRole("document")
+	    expect(node_frame).toHaveClass("full-frame");
 	});
     });
     
-    describe("given full props", () => {
+    describe("given main props", () => {
 
 	const now = Date.now()
 	const create_time = new Date(now);
 	const modify_time = new Date(now + 1234567);
+	const test_id = "test-id";
 	const name = "xname";
 	const content = "xcontent";
 	const sizing = "base-frame";	
@@ -88,6 +94,7 @@ describe("<NodeFrame/> Component", () => {
 	let container = null;
 	beforeEach(() => {
 	    container = render(<NodeFrame
+			       test_id={test_id}
 			       name={name}
 			       content={content}
 			       creation_datetime={create_time}					              modification_datetime={modify_time}
@@ -95,25 +102,32 @@ describe("<NodeFrame/> Component", () => {
 			       />).container;
 	});
     
-	it('renders a name field', () => {
-	    const name_field = screen.getByRole('textbox', {name: /name/i});
+	it("renders a test id", () => {
+	    const node_frame  = screen.getByTestId(test_id);
+	    expect(node_frame).toBeInTheDocument();
+	    //confirm that the "renders no test id" test could fail
+	    expect(node_frame).toHaveAttribute("data-testid");	    
+	});
+
+	it("renders a name field", () => {
+	    const name_field = screen.getByRole("textbox", {name: /name/i});
 	    expect(name_field).toBeInTheDocument();
 	});
 
 	it("displays the name from props", () => {
-	    const name_field = screen.getByRole('textbox', {name: /name/i});
+	    const name_field = screen.getByRole("textbox", {name: /name/i});
 	    expect(name_field).toHaveDisplayValue(name);
 	});
 	
-	it('renders a content field', () => {
-	    const content_field = screen.getByRole('textbox',
+	it("renders a content field", () => {
+	    const content_field = screen.getByRole("textbox",
 						   {name: /content/i}
 						  );
 	    expect(content_field).toBeInTheDocument();
 	});
 
-	it('displays the content from props', () => {
-	    const content_field = screen.getByRole('textbox',
+	it("displays the content from props", () => {
+	    const content_field = screen.getByRole("textbox",
 						   {name: /content/i}
 						  );
 	    expect(content_field).toHaveDisplayValue(content);
@@ -121,14 +135,14 @@ describe("<NodeFrame/> Component", () => {
 	
 	it("renders a creation datetime", () => {
 	    const creation_datetime_tag = screen.getByRole(
-		'heading', {name: /creation-datetime/}
+		"heading", {name: /creation-datetime/}
 	    );
 	    expect(creation_datetime_tag).toBeInTheDocument();
 	});
 	
 	it("renders the creation datetime from props", () => {
 	    const creation_datetime_tag = screen.getByRole(
-		'heading', {name: /creation-datetime/}
+		"heading", {name: /creation-datetime/}
 	    );
 	    const expected_create_time_text = DatetimeHelper.
 		  app_datetime_string(create_time);
@@ -139,14 +153,14 @@ describe("<NodeFrame/> Component", () => {
 	
 	it("renders a modification datetime", () => {
 	    const modification_datetime_tag = screen.getByRole(
-		'heading', {name: /modification-datetime/}
+		"heading", {name: /modification-datetime/}
 	    );
 	    expect(modification_datetime_tag).toBeInTheDocument();
 	});
 	
 	it("renders the modification datetime from props", () => {
 	    const modification_datetime_tag = screen.getByRole(
-		'heading', {name: /modification-datetime/}
+		"heading", {name: /modification-datetime/}
 	    );
 	    const expected_modify_time_text = DatetimeHelper.
 		  app_datetime_string(modify_time);
@@ -156,7 +170,23 @@ describe("<NodeFrame/> Component", () => {
 	});
 
 	it("renders with a className from the 'sizing' prop", () => {
+	    const base_node_frame = screen.getByTestId(test_id);
 	    expect(container.firstChild).toHaveClass("base-frame");
+	});
+    });
+    
+    describe("given an on_click property", () => {
+
+	const on_click = jest.fn();
+
+	describe("when it is clicked", () => {
+
+	    it("calls the function passed as the on_click prop", () => {
+		render(<NodeFrame test_id="test-id" on_click={on_click}/>);
+		const node_frame = screen.getByTestId("test-id");
+		fireEvent.click(node_frame.firstChild);
+		expect(on_click).toHaveBeenCalled();
+	    });
 	});
     });
 });
