@@ -2,6 +2,7 @@ import React from "react";
 import {render, screen, getNodeText, fireEvent} from "@testing-library/react"
 import NodeFrame from "./";
 import { DatetimeHelper } from "../../helpers";
+
 describe("<NodeFrame/> Component", () => {
 
     describe("given no props", () => {
@@ -76,8 +77,13 @@ describe("<NodeFrame/> Component", () => {
 	});
 
 	it("renders with a className for full sizing", () => {
-	    const node_frame = screen.getByRole("document")
+	    const node_frame = screen.getByRole("document");
 	    expect(node_frame).toHaveClass("full-frame");
+	});
+
+	it("renders no children", () => {
+	    const node_frames = screen.getAllByRole("document");
+	    expect(node_frames).toHaveLength(1);
 	});
     });
     
@@ -97,8 +103,8 @@ describe("<NodeFrame/> Component", () => {
 			       test_id={test_id}
 			       name={name}
 			       content={content}
-			       creation_datetime={create_time}					              modification_datetime={modify_time}
-			       sizing={sizing}
+			       creation_datetime={create_time}
+			       modification_datetime={modify_time}			        	       sizing={sizing}
 			       />).container;
 	});
     
@@ -171,22 +177,28 @@ describe("<NodeFrame/> Component", () => {
 
 	it("renders with a className from the 'sizing' prop", () => {
 	    const base_node_frame = screen.getByTestId(test_id);
-	    expect(container.firstChild).toHaveClass("base-frame");
+	    expect(base_node_frame).toHaveClass("base-frame");
 	});
     });
     
-    describe("given an on_click property", () => {
+    describe("given a children property containing a NodeFrame", () => {
+	
+	it("renders a child in its bounds", () => {
+	    const expect_child = <NodeFrame test_id="child-id" />;
+	    render(<NodeFrame test_id="parent-id" children={[expect_child]} />);
+	    const parent = screen.getByTestId("parent-id");
+	    const child = screen.getByTestId("child-id");
+	    expect(parent).toContainElement(child);
+	});
+    });
 
-	const on_click = jest.fn();
-
-	describe("when it is clicked", () => {
-
-	    it("calls the function passed as the on_click prop", () => {
-		render(<NodeFrame test_id="test-id" on_click={on_click}/>);
-		const node_frame = screen.getByTestId("test-id");
-		fireEvent.click(node_frame.firstChild);
-		expect(on_click).toHaveBeenCalled();
-	    });
+    describe("when NodeFrame is clicked", () => {
+	it ("gets a new child NodeFrame", () => {
+	    render(<NodeFrame test_id="test-id" />);
+	    const test_node = screen.getByTestId("test-id");
+	    fireEvent.click(test_node)
+	    const node_frames = screen.getAllByRole("document")
+	    expect(node_frames).toHaveLength(2);
 	});
     });
 });
