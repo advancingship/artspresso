@@ -7,7 +7,6 @@ describe("<NodeFrame/> Component", () => {
 
     describe("given no props", () => {
 
-	let container = null;
 	beforeEach(() => {
 	    render(<NodeFrame />);
 	});
