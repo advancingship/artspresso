@@ -39,7 +39,7 @@ function app_datetime_milliseconds(app_datetime_string) {
 	  ":" + split_time_string[1] +
 	  ":" + split_time_string[2];
     return Date.parse(new_date_string) + parseInt(split_time_string[3]);
-};
+}
 
 
 export {

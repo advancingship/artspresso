@@ -52,8 +52,8 @@ describe("<NodeFrame/> Component", () => {
 		"heading", {name: /creation-datetime/}
 	    );
 	    const creation_datetime_text = getNodeText(creation_datetime_tag);
-	    const creation_datetime = DatetimeHelper.
-		  app_datetime_milliseconds(creation_datetime_text);
+	    const creation_datetime = DatetimeHelper
+		  .app_datetime_milliseconds(creation_datetime_text);
 	    const current_datetime = Date.now();
 	    expect((current_datetime - creation_datetime) < 1000);
 	});
@@ -92,19 +92,18 @@ describe("<NodeFrame/> Component", () => {
 	const create_time = new Date(now);
 	const modify_time = new Date(now + 1234567);
 	const test_id = "test-id";
-	const name = "xname";
-	const content = "xcontent";
+	const name = "test-name";
+	const content = "test-content";
 	const sizing = "base-frame";	
 
-	let container = null;
 	beforeEach(() => {
-	    container = render(<NodeFrame
+	    render(<NodeFrame
 			       test_id={test_id}
 			       name={name}
 			       content={content}
 			       creation_datetime={create_time}
 			       modification_datetime={modify_time}			        	       sizing={sizing}
-			       />).container;
+			       />);
 	});
     
 	it("renders a test id", () => {
@@ -149,8 +148,8 @@ describe("<NodeFrame/> Component", () => {
 	    const creation_datetime_tag = screen.getByRole(
 		"heading", {name: /creation-datetime/}
 	    );
-	    const expected_create_time_text = DatetimeHelper.
-		  app_datetime_string(create_time);
+	    const expected_create_time_text = DatetimeHelper
+		  .app_datetime_string(create_time);
 	    expect(creation_datetime_tag).toHaveTextContent(
 		expected_create_time_text
 	    );
@@ -167,8 +166,8 @@ describe("<NodeFrame/> Component", () => {
 	    const modification_datetime_tag = screen.getByRole(
 		"heading", {name: /modification-datetime/}
 	    );
-	    const expected_modify_time_text = DatetimeHelper.
-		  app_datetime_string(modify_time);
+	    const expected_modify_time_text = DatetimeHelper
+		  .app_datetime_string(modify_time);
 	    expect(modification_datetime_tag).toHaveTextContent(
 		expected_modify_time_text
 	    );
