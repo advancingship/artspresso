@@ -7,8 +7,8 @@ function App() {
     <div className="app">
       <header className="app-header">
         <div>
-	  <h1>Artspresso</h1>
-	</div>
+          <h1>Artspresso</h1>
+        </div>
         <div className="app-main">	  
           <NodeFrame />
         </div>

@@ -4,9 +4,9 @@ import App from "./";
 
 describe("<App/> Component", () => {
     it("renders app name", () => {
-	render(<App />);
-	const app_name = screen.getByText(/Artspresso/i);
-	expect(app_name).toBeInTheDocument();
-    });
+		render(<App />);
+		const app_name = screen.getByText(/Artspresso/i);
+		expect(app_name).toBeInTheDocument();
+	});
 });
     
