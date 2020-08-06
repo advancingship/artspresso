@@ -11,9 +11,10 @@ describe("<NodeFrame/> Component", () => {
 			render(<NodeFrame />);
 		});
 
-		it("renders no test id", () => {
+		it("renders a generic test id", () => {
 			const node_frame = screen.getByRole("document")
-			expect(node_frame).not.toHaveAttribute("data-testid");
+			expect(node_frame).toHaveAttribute("data-testid"
+				,expect.stringContaining("node-frame-test-id"));
 		});
 
 		it("renders a name field", () => {
@@ -41,16 +42,12 @@ describe("<NodeFrame/> Component", () => {
 		});
 	
 		it("renders a creation datetime", () => {
-			const creation_datetime_tag = screen.getByRole(
-				"heading", {name: /creation-datetime/}
-			);
+			const creation_datetime_tag = screen.getByTestId("creation-datetime-node-frame-test-id");
 			expect(creation_datetime_tag).toBeInTheDocument();
 		});
 	
 		it("renders the creation datetime from when it was rendered", () => {
-			const creation_datetime_tag = screen.getByRole(
-				"heading", {name: /creation-datetime/}
-			);
+			const creation_datetime_tag = screen.getByTestId("creation-datetime-node-frame-test-id");
 			const creation_datetime_text = getNodeText(creation_datetime_tag);
 			const creation_datetime = DatetimeHelper
 				.app_datetime_milliseconds(creation_datetime_text);
@@ -59,16 +56,12 @@ describe("<NodeFrame/> Component", () => {
 		});
 	
 		it("renders a modification datetime", () => {
-			const modification_datetime_tag = screen.getByRole(
-				"heading", {name: /modification-datetime/}
-			);
+			const modification_datetime_tag = screen.getByTestId("modification-datetime-node-frame-test-id");
 			expect(modification_datetime_tag).toBeInTheDocument();
 		});
 	
 		it("renders the modification datetime as dashed-out", () => {
-			const modification_datetime_tag = screen.getByRole(
-				"heading", {name: /modification-datetime/}
-	    );
+			const modification_datetime_tag = screen.getByTestId("modification-datetime-node-frame-test-id");
 			const dashed_time = "-------- --:--:--:---"
 			expect(modification_datetime_tag).toHaveTextContent(
 				dashed_time
@@ -139,16 +132,12 @@ describe("<NodeFrame/> Component", () => {
 		});
 
 		it("renders a creation datetime", () => {
-			const creation_datetime_tag = screen.getByRole(
-				"heading", {name: /creation-datetime/}
-			);
+			const creation_datetime_tag = screen.getByTestId("creation-datetime-" + test_id);
 			expect(creation_datetime_tag).toBeInTheDocument();
 		});
 
 		it("renders the creation datetime from props", () => {
-			const creation_datetime_tag = screen.getByRole(
-				"heading", {name: /creation-datetime/}
-			);
+			const creation_datetime_tag = screen.getByTestId("creation-datetime-" + test_id);
 			const expected_create_time_text = DatetimeHelper
 				.app_datetime_string(create_time);
 			expect(creation_datetime_tag).toHaveTextContent(
@@ -157,16 +146,12 @@ describe("<NodeFrame/> Component", () => {
 		});
 
 		it("renders a modification datetime", () => {
-			const modification_datetime_tag = screen.getByRole(
-				"heading", {name: /modification-datetime/}
-			);
+			const modification_datetime_tag = screen.getByTestId("modification-datetime-" + test_id);
 			expect(modification_datetime_tag).toBeInTheDocument();
 		});
 
 		it("renders the modification datetime from props", () => {
-			const modification_datetime_tag = screen.getByRole(
-				"heading", {name: /modification-datetime/}
-			);
+			const modification_datetime_tag = screen.getByTestId("modification-datetime-" + test_id);
 			const expected_modify_time_text = DatetimeHelper
 				.app_datetime_string(modify_time);
 			expect(modification_datetime_tag).toHaveTextContent(
@@ -192,12 +177,31 @@ describe("<NodeFrame/> Component", () => {
 	});
 
 	describe("when NodeFrame is clicked", () => {
-		it ("gets a new child NodeFrame", () => {
-			render(<NodeFrame test_id="test-id" />);
-			const test_node = screen.getByTestId("test-id");
-			fireEvent.click(test_node)
-			const node_frames = screen.getAllByRole("document")
-			expect(node_frames).toHaveLength(2);
+		describe("and has no parent NodeFrame", () => {
+			it("gets a new child NodeFrame", () => {
+				const expect_child = <NodeFrame test_id="expected-child-id" />;
+				render(<NodeFrame test_id="parent-id" children={[expect_child]} />);
+				const parent = screen.getByTestId("parent-id");
+				const child = screen.getByTestId("expected-child-id");
+				fireEvent.click(parent)
+				expect(parent).toContainElement(child);
+				const new_child = screen.getByTestId("child-id");
+				expect(parent).toContainElement(new_child);
+				const node_frames = screen.getAllByRole("document")
+				expect(node_frames).toHaveLength(3);
+			});
+		});
+		describe("and has a parent NodeFrame", () => {
+			it("does not get a new child NodeFrame", () => {
+				const expect_child = <NodeFrame test_id="expected-child-id" />;
+				render(<NodeFrame test_id="parent-id" sizing="base-frame" children={[expect_child]} />);
+				const child = screen.getByTestId("expected-child-id");
+				fireEvent.click(child)
+				const new_child = screen.queryByTestId("child-id");
+				expect(child).not.toContainElement(new_child);
+				const node_frames = screen.getAllByRole("document")
+				expect(node_frames).toHaveLength(2);
+			});
 		});
 	});
 });

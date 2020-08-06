@@ -1,4 +1,5 @@
 .node-frame
+  position: relative
   background-color: gainsboro
   float: left
   margin-left: .5vw
@@ -11,19 +12,17 @@
   max-width: 99vw
   min-height: 82vh
   max-height: 82vh
+  overflow: auto
 
 .base-frame
   border: solid black 1px
-  min-width: 18vw
-  max-width: 18vw
-  min-height: 22vh
-  max-height: 22vh
+  min-width: 1vw
+  max-width: 48vw
+  min-height: 1vh
+  max-height: 48vh
 
 .full-frame .node-frame
   background-color: white
-
-.base-frame .node-frame
-  background-color: ghostwhite
 
 .node-frame h2
   font-size: 1em
@@ -33,19 +32,29 @@
   font-size: .8em
 
 .form-inline
-  width: 70%
+  width: 95%
 
 .form-group
   display: inline
-  width: 70%
+  width: 5%
 
 .input-group
-  width: 70% !important
+  width: 95% !important
 
 .form-control
   background-color: gainsboro
   border: none
-  width: 50% !important
+  width: 95% !important
+  resize: none
+
+.node-frame-name
+  margin: 5px 5px 5px 5px
+  font-weight: bold
+  font-size: medium
+
+.node-frame-content
+  margin: 5px 5px 5px 5px
+  font-size: medium
 
 .full-frame .node-frame .form-control
   background-color: white
@@ -53,12 +62,23 @@
 .base-frame .node-frame .form-control
   background-color: ghostwhite
 
-span.input-group-addon
-  width: 50px !important
-  
-.timestamps
-  float: right
+.node-frame-footer
+  position: absolute
+  width: 100%
+  bottom: 0
 
-  h4
-    display: inline
+.timestamps
+  position: relative
+
+  div
+    position: absolute
     margin: 0 5px 0 5px
+    font-weight: lighter
+    font-size: x-small
+    bottom: 0
+
+  .creation-datetime
+    left: 0
+
+  .modification-datetime
+    right: 0
