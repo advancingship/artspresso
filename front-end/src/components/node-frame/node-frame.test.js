@@ -2,6 +2,7 @@ import React from "react";
 import {render, screen, getNodeText, fireEvent} from "@testing-library/react"
 import NodeFrame from "./";
 import { DatetimeHelper } from "../../helpers";
+import { MouseEventHelper } from "../../helpers";
 
 describe("<NodeFrame/> Component", () => {
 
@@ -183,12 +184,31 @@ describe("<NodeFrame/> Component", () => {
 				render(<NodeFrame test_id="parent-id" children={[expect_child]} />);
 				const parent = screen.getByTestId("parent-id");
 				const child = screen.getByTestId("expected-child-id");
-				fireEvent.click(parent)
+				const event_values = {bubbles: true, pageX: 250, pageY: 251};
+				const mouse_click= MouseEventHelper.get_fake_mouse_event('click', event_values);
+ 				fireEvent(parent, mouse_click);
 				expect(parent).toContainElement(child);
 				const new_child = screen.getByTestId("child-id");
 				expect(parent).toContainElement(new_child);
 				const node_frames = screen.getAllByRole("document")
 				expect(node_frames).toHaveLength(3);
+			});
+			it( "appears where the user clicked", () => {
+				const expect_child = <NodeFrame test_id="expected-child-id" />;
+				const on_mouse_up = jest.fn();
+				render(<NodeFrame test_id="parent-id" onMouseUp={on_mouse_up} children={[expect_child]} />);
+				const parent = screen.getByTestId("parent-id");
+				const x = 250;
+				const y = 251;
+				const width = 220; //NodeFrame.BASE_WIDTH
+				const height = 80; //NodeFrame.BASE_HEIGHT
+				const event_values = {bubbles: true, pageX: x, pageY: y};
+				const mouse_click= MouseEventHelper.get_fake_mouse_event('click', event_values);
+				fireEvent(parent, mouse_click);
+				const new_child = screen.getByTestId("child-id");
+				expect(parent).toContainElement(new_child);
+				expect(new_child.style.left).toEqual(x - (width/2) + "px");
+				expect(new_child.style.top).toEqual(y - (height/2) + "px");
 			});
 		});
 		describe("and has a parent NodeFrame", () => {
@@ -205,5 +225,3 @@ describe("<NodeFrame/> Component", () => {
 		});
 	});
 });
-
-    
