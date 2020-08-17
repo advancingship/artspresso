@@ -35,8 +35,9 @@ function NodeFrame(props) {
 	                      }} />
 	      </Form.Group>
 		  <div className="node-frame-body">
-			  {child_frames.map((element, index) => {
-				  return <div key={index}>{element}</div>
+			  {child_frames.map((child_frame_props, index) => {
+				  child_frame_props.key = index;
+				  return <NodeFrame {...child_frame_props} />
 			  })}
 		  </div>
 	      <div className="node-frame-footer">

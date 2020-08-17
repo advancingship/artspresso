@@ -169,7 +169,7 @@ describe("<NodeFrame/> Component", () => {
 	describe("given a child_frames property containing a NodeFrame", () => {
 
 		it("renders a child in its bounds", () => {
-			const expect_child = <NodeFrame test_id="child-id" />;
+			const expect_child = {test_id: "child-id"};
 			render(<NodeFrame test_id="parent-id" child_frames={[expect_child]} />);
 			const parent = screen.getByTestId("parent-id");
 			const child = screen.getByTestId("child-id");
@@ -180,7 +180,7 @@ describe("<NodeFrame/> Component", () => {
 	describe("when NodeFrame is clicked", () => {
 		describe("and has no parent NodeFrame", () => {
 			it("gets a new child NodeFrame", () => {
-				const expect_child = <NodeFrame test_id="expected-child-id" />;
+				const expect_child = {test_id: "expected-child-id"};
 				render(<NodeFrame test_id="parent-id" child_frames={[expect_child]} />);
 				const parent = screen.getByTestId("parent-id");
 				const child = screen.getByTestId("expected-child-id");
@@ -194,7 +194,7 @@ describe("<NodeFrame/> Component", () => {
 				expect(node_frames).toHaveLength(3);
 			});
 			it( "appears where the user clicked", () => {
-				const expect_child = <NodeFrame test_id="expected-child-id" />;
+				const expect_child = {test_id: "expected-child-id"};
 				const on_mouse_up = jest.fn();
 				render(<NodeFrame test_id="parent-id" onMouseUp={on_mouse_up} child_frames={[expect_child]} />);
 				const parent = screen.getByTestId("parent-id");
@@ -213,7 +213,7 @@ describe("<NodeFrame/> Component", () => {
 		});
 		describe("and has a parent NodeFrame", () => {
 			it("does not get a new child NodeFrame", () => {
-				const expect_child = <NodeFrame test_id="expected-child-id" />;
+				const expect_child = {test_id: "expected-child-id"};
 				render(<NodeFrame test_id="parent-id" sizing="base-frame" child_frames={[expect_child]} />);
 				const child = screen.getByTestId("expected-child-id");
 				fireEvent.click(child)

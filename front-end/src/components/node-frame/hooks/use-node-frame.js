@@ -1,5 +1,4 @@
-import React, { useState } from "react";
-import NodeFrame from "../node-frame";
+import { useState } from "react";
 
 const BASE_WIDTH = "220";
 const BASE_HEIGHT = "80";
@@ -22,17 +21,17 @@ export default function useNodeFrame(props) {
             const child_top = e.pageY  - (BASE_HEIGHT/2) + "px";
             const child_width = BASE_WIDTH + "px";
             const child_height = BASE_HEIGHT + "px";
-            const new_child = <NodeFrame
-                test_id="child-id"
-                sizing="base-frame"
-                style={{
+            const new_child = {
+                test_id: "child-id",
+                sizing: "base-frame",
+                style: {
                     position: "fixed",
                     width: child_width,
                     height: child_height,
                     left: child_left,
                     top: child_top,
-                }}
-            />;
+                },
+            };
             set_child_frames(
                 child_frames => {
                     const new_child_frames = [...child_frames];
