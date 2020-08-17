@@ -6,7 +6,7 @@ import { DatetimeHelper } from "../../helpers";
 
 function NodeFrame(props) {
     const {test_id, name, content, creation_datetime, modification_datetime
-	   , sizing, children, handle_click, style} = hooks.useNodeFrame(props);
+	   , sizing, child_frames, handle_click, style} = hooks.useNodeFrame(props);
 
     return (
 	    <div role="document" data-testid={test_id}
@@ -35,7 +35,7 @@ function NodeFrame(props) {
 	                      }} />
 	      </Form.Group>
 		  <div className="node-frame-body">
-			  {children.map((element, index) => {
+			  {child_frames.map((element, index) => {
 				  return <div key={index}>{element}</div>
 			  })}
 		  </div>

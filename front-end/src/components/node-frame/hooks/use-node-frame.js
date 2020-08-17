@@ -11,7 +11,7 @@ export default function useNodeFrame(props) {
     const creation_datetime = props.creation_datetime || new Date(Date.now());
     const modification_datetime = props.modification_datetime;
     const sizing = props.sizing || "full-frame";
-    const [children, set_children] = useState(props.children || []);
+    const [child_frames, set_child_frames] = useState(props.child_frames || []);
     const style = props.style;
 
     const handle_click = (e) => {
@@ -33,11 +33,11 @@ export default function useNodeFrame(props) {
                     top: child_top,
                 }}
             />;
-            set_children(
-                children => {
-                    const new_children = [...children];
-                    new_children.push(new_child);
-                    return new_children;
+            set_child_frames(
+                child_frames => {
+                    const new_child_frames = [...child_frames];
+                    new_child_frames.push(new_child);
+                    return new_child_frames;
                 });
         }
     }
@@ -49,7 +49,7 @@ export default function useNodeFrame(props) {
         creation_datetime,
         modification_datetime,
         sizing,
-        children,
+        child_frames,
         handle_click,
         style,
     };
