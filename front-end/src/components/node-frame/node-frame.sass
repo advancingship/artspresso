@@ -21,9 +21,6 @@
   min-height: 1vh
   max-height: 48vh
 
-.full-frame .node-frame
-  background-color: white
-
 .node-frame h2
   font-size: 1em
 
@@ -31,37 +28,30 @@
   color: black
   font-size: .8em
 
-.form-inline
-  width: 95%
-
-.form-group
-  display: inline
-  width: 95%
-
-.input-group
-  width: 95% !important
-
-.form-control
+.input-control
   background-color: gainsboro
   border: none
   width: 95% !important
   resize: none
 
+.full-frame .base-frame .input-control
+  background-color: white
+
 .node-frame-name
   margin: 0 5px 0 5px
-  font-weight: bold
-  font-size: medium
-  height: 15px
+  font-weight: bold !important
+  font-size: medium !important
+  height: 15px !important
 
 .node-frame-content
   margin: 0 5px 0 5px
   font-size: medium
   height: 45px
 
-.full-frame .node-frame .form-control
+.full-frame .node-frame
   background-color: white
 
-.base-frame .node-frame .form-control
+.base-frame .node-frame
   background-color: ghostwhite
 
 .node-frame-footer

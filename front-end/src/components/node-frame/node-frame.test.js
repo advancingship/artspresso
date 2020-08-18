@@ -3,6 +3,10 @@ import {render, screen, getNodeText, fireEvent} from "@testing-library/react"
 import NodeFrame from "./";
 import { DatetimeHelper } from "../../helpers";
 import { MouseEventHelper } from "../../helpers";
+import * as hooks from "./hooks";
+jest.mock("./hooks", () => ({
+	...jest.requireActual("./hooks")
+}))
 
 describe("<NodeFrame/> Component", () => {
 
@@ -178,49 +182,64 @@ describe("<NodeFrame/> Component", () => {
 	});
 
 	describe("when NodeFrame is clicked", () => {
-		describe("and has no parent NodeFrame", () => {
-			it("gets a new child NodeFrame", () => {
-				const expect_child = {test_id: "expected-child-id"};
-				render(<NodeFrame test_id="parent-id" child_frames={[expect_child]} />);
-				const parent = screen.getByTestId("parent-id");
-				const child = screen.getByTestId("expected-child-id");
-				const event_values = {bubbles: true, pageX: 250, pageY: 251};
-				const mouse_click= MouseEventHelper.get_fake_mouse_event('click', event_values);
- 				fireEvent(parent, mouse_click);
-				expect(parent).toContainElement(child);
-				const new_child = screen.getByTestId("child-id");
-				expect(parent).toContainElement(new_child);
-				const node_frames = screen.getAllByRole("document")
-				expect(node_frames).toHaveLength(3);
+
+		describe("when create mode is passed", () => {
+
+			describe("and has no parent NodeFrame", () => {
+
+				it( "it calls handle_click and gets a new child_frame", () => {
+					const use_node_frame_spy = jest.spyOn(hooks, "useNodeFrame");
+					const click_handler = jest.fn();
+					//first it renders the parent and in that render must render the child
+					use_node_frame_spy.mockReturnValueOnce({
+						handle_click: click_handler,
+						test_id: "parent-id",
+						child_frames: [{}]
+					}).mockReturnValueOnce({
+						test_id: "child-id",
+						child_frames: []
+					});
+					render(<NodeFrame mode="1" />);
+					const parent = screen.getByTestId("parent-id");
+					fireEvent.click(parent);
+					expect(click_handler).toBeCalledTimes(1);
+					const child = screen.getByTestId("child-id");
+					expect(parent).toContainElement(child);
+				});
+
+				it( "appears where the user clicked", () => {
+					const expect_child = {test_id: "expected-child-id"};
+					const on_mouse_up = jest.fn();
+					render(<NodeFrame test_id="parent-id" onMouseUp={on_mouse_up}
+									  mode="1"
+									  child_frames={[expect_child]} />);
+					const parent = screen.getByTestId("parent-id");
+					const x = 250;
+					const y = 251;
+					const width = 220; //NodeFrame.BASE_WIDTH
+					const height = 80; //NodeFrame.BASE_HEIGHT
+					const event_values = {bubbles: true, pageX: x, pageY: y};
+					const mouse_click= MouseEventHelper.get_fake_mouse_event('click', event_values);
+					fireEvent(parent, mouse_click);
+					const new_child = screen.getByTestId("child-id");
+					expect(parent).toContainElement(new_child);
+					expect(new_child.style.left).toEqual(x - (width/2) + "px");
+					expect(new_child.style.top).toEqual(y - (height/2) + "px");
+				});
 			});
-			it( "appears where the user clicked", () => {
-				const expect_child = {test_id: "expected-child-id"};
-				const on_mouse_up = jest.fn();
-				render(<NodeFrame test_id="parent-id" onMouseUp={on_mouse_up} child_frames={[expect_child]} />);
-				const parent = screen.getByTestId("parent-id");
-				const x = 250;
-				const y = 251;
-				const width = 220; //NodeFrame.BASE_WIDTH
-				const height = 80; //NodeFrame.BASE_HEIGHT
-				const event_values = {bubbles: true, pageX: x, pageY: y};
-				const mouse_click= MouseEventHelper.get_fake_mouse_event('click', event_values);
-				fireEvent(parent, mouse_click);
-				const new_child = screen.getByTestId("child-id");
-				expect(parent).toContainElement(new_child);
-				expect(new_child.style.left).toEqual(x - (width/2) + "px");
-				expect(new_child.style.top).toEqual(y - (height/2) + "px");
-			});
-		});
-		describe("and has a parent NodeFrame", () => {
-			it("does not get a new child NodeFrame", () => {
-				const expect_child = {test_id: "expected-child-id"};
-				render(<NodeFrame test_id="parent-id" sizing="base-frame" child_frames={[expect_child]} />);
-				const child = screen.getByTestId("expected-child-id");
-				fireEvent.click(child)
-				const new_child = screen.queryByTestId("child-id");
-				expect(child).not.toContainElement(new_child);
-				const node_frames = screen.getAllByRole("document")
-				expect(node_frames).toHaveLength(2);
+			describe("and has a parent NodeFrame", () => {
+				it("does not get a new child NodeFrame", () => {
+					const parent_props = {};
+					const child_props = {test_id: "child-test-id",
+						mode: "1",
+						parent_props: parent_props
+					};
+					render(<NodeFrame {...child_props} />);
+					const child = screen.getByTestId("child-test-id");
+					fireEvent.click(child)
+					const node_frames = screen.getAllByRole("document")
+					expect(node_frames).toHaveLength(1);
+				});
 			});
 		});
 	});

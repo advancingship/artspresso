@@ -1,39 +1,43 @@
 import React from "react";
 import * as hooks from "./hooks";
 import "./node-frame.sass";
-import Form from "react-bootstrap/Form"
 import { DatetimeHelper } from "../../helpers";
 
 function NodeFrame(props) {
     const {test_id, name, content, creation_datetime, modification_datetime
-	   , sizing, child_frames, handle_click, style} = hooks.useNodeFrame(props);
+	   , sizing, child_frames, handle_click, style, mode} = hooks.useNodeFrame(props);
 
     return (
 	    <div role="document" data-testid={test_id}
-	         className={"node-frame " + sizing} onClick={handle_click}
+	         className={"node-frame " + sizing}
+			 onClick={(e) => handle_click(e)}
 	         style={style}>
 	      <div className="node-frame-header">
-	        <Form.Group controlId="node-frame-form.control-name">
-	          <Form.Control className="node-frame-name"
+	        <div className="node-frame-form.control-name input-control">
+	          <input className="node-frame-name input-control"
 	                        type="text"  aria-label="name"
 	                        placeholder="optional name" defaultValue={name}
 							autoFocus
 							onClick={(e) => {
 								e.preventDefault();
-								e.stopPropagation();
+								if (mode === "1") {
+									e.stopPropagation();
+								}
 							}}/>
-	        </Form.Group>
+	        </div>
 	      </div>
-	      <Form.Group controlId="node-frame-form.control-textarea">
-		    <Form.Control className="node-frame-content" as="textarea"
+	      <div className="node-frame-form.control-textarea input-control">
+		    <textarea className="node-frame-content input-control"
 						  aria-label="content"
 						  placeholder="optional content"
 	                      defaultValue={content}
 	                      onClick={(e) => {
 	                        e.preventDefault();
-	                        e.stopPropagation();
+	                        if (mode === "1") {
+								e.stopPropagation();
+							}
 	                      }} />
-	      </Form.Group>
+	      </div>
 		  <div className="node-frame-body">
 			  {child_frames.map((child_frame_props, index) => {
 				  child_frame_props.key = index;
