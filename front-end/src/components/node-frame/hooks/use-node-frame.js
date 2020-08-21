@@ -1,7 +1,10 @@
 import { useState } from "react";
 
-const BASE_WIDTH = "220";
-const BASE_HEIGHT = "80";
+const BASE_WIDTH = 220;
+const BASE_HEIGHT = 80;
+const half_base_width = BASE_WIDTH/2;
+const half_base_height = BASE_HEIGHT/2;
+const PX = "px";
 
 export default function useNodeFrame(props = {}) {
     const test_id = props.test_id || "node-frame-test-id";
@@ -23,6 +26,7 @@ export default function useNodeFrame(props = {}) {
         };
         child.mode = props.mode;
         child.child_number = index;
+        child.is_mouse_down = false;
         return child;
     })
 
@@ -32,12 +36,12 @@ export default function useNodeFrame(props = {}) {
         let child_top = "";
         if (e) {
             e.stopPropagation();
-            child_left = e.pageX - (BASE_WIDTH/2) + "px";
-            child_top = e.pageY  - (BASE_HEIGHT/2) + "px";
+            child_left = left_when_middle_is(e.pageX)
+            child_top = top_when_middle_is(e.pageY);
         }
         if (parent == null) {
-            const child_width = BASE_WIDTH + "px";
-            const child_height = BASE_HEIGHT + "px";
+            const child_width = BASE_WIDTH + PX;
+            const child_height = BASE_HEIGHT + PX;
             const new_child = {
                 test_id: "child-id",
                 sizing: "base-frame",
@@ -69,11 +73,64 @@ export default function useNodeFrame(props = {}) {
         }
     };
 
-    let handle_click = null;
+    const left_when_middle_is = (x) => {
+        return x - half_base_width + PX;
+    }
+
+    const top_when_middle_is = (y) => {
+        return y - half_base_height + PX;
+    }
+
+    let is_mouse_down = false;
+
+    const handle_arrangement_mouse_down = () => {
+            is_mouse_down = true;
+    };
+
+    const handle_arrangement_mouse_move = (e) => {
+        if (is_mouse_down === true) {
+            const node_frame = e.currentTarget;
+            node_frame.style.left = left_when_middle_is(e.pageX)
+            node_frame.style.top = top_when_middle_is(e.pageY)
+        }
+    };
+
+    const handle_arrangement_mouse_up = (e) => {
+        is_mouse_down = false;
+        const new_style = {...style};
+        new_style.left = e.currentTarget.style.left;
+        new_style.top = e.currentTarget.style.top;
+        const new_child_frames = [...props.parent_props.child_frames];
+        new_child_frames.map((child) => {
+            if (child.child_number === props.child_number) {
+                child.style = new_style;
+            }
+            return child;
+        });
+        props.parent_props.set_child_frames(() => {return new_child_frames});
+    };
+
+    let handle_click;
+    let handle_mouse_down;
+    let handle_mouse_move;
+    let handle_mouse_up;
+
     if (mode === "1") {
-        handle_click = handle_creation_click;
+        handle_click = (e) => {handle_creation_click(e)};
     } else if (mode === "2") {
-        handle_click = handle_deletion_click;
+        handle_click = (e) => {handle_deletion_click(e)};
+    } else if (mode === "3") {
+        if (props.parent_props != null) {
+            handle_mouse_down = (e) => {
+                handle_arrangement_mouse_down(e)
+            };
+            handle_mouse_move = (e) => {
+                handle_arrangement_mouse_move(e)
+            };
+            handle_mouse_up = (e) => {
+                handle_arrangement_mouse_up(e)
+            };
+        }
     }
 
     return {
@@ -85,6 +142,9 @@ export default function useNodeFrame(props = {}) {
         sizing,
         child_frames,
         handle_click,
+        handle_mouse_down,
+        handle_mouse_move,
+        handle_mouse_up,
         style,
         parent_props,
         mode,

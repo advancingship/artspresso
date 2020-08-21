@@ -5,12 +5,16 @@ import { DatetimeHelper } from "../../helpers";
 
 function NodeFrame(props) {
     const {test_id, name, content, creation_datetime, modification_datetime
-	   , sizing, child_frames, handle_click, style, mode} = hooks.useNodeFrame(props);
+	   , sizing, child_frames, handle_click, handle_mouse_down, handle_mouse_move
+		, handle_mouse_up, style, mode} = hooks.useNodeFrame(props);
 
     return (
 	    <div role="document" data-testid={test_id}
 	         className={"node-frame " + sizing}
-			 onClick={(e) => handle_click(e)}
+			 onClick={handle_click}
+			 onMouseDown={handle_mouse_down}
+			 onMouseMove={handle_mouse_move}
+			 onMouseUp={handle_mouse_up}
 	         style={style}>
 	      <div className="node-frame-header">
 	        <div className="node-frame-form.control-name input-control">
