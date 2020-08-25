@@ -185,7 +185,7 @@ describe("<NodeFrame/> Component", () => {
 
 		describe("when create mode is passed", () => {
 
-			describe("and has no parent NodeFrame", () => {
+			describe("when NodeFrame has no parent NodeFrame", () => {
 
 				it( "it calls handle_click and gets a new child_frame", () => {
 					const use_node_frame_spy = jest.spyOn(hooks, "useNodeFrame");
@@ -227,7 +227,7 @@ describe("<NodeFrame/> Component", () => {
 					expect(new_child.style.top).toEqual(y - (height/2) + "px");
 				});
 			});
-			describe("and has a parent NodeFrame", () => {
+			describe("when NodeFrame has a parent NodeFrame", () => {
 				it("does not get a new child NodeFrame", () => {
 					const parent_props = {};
 					const child_props = {test_id: "child-test-id",

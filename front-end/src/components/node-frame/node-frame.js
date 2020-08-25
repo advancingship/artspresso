@@ -9,7 +9,7 @@ function NodeFrame(props) {
 		, handle_mouse_up, style, mode} = hooks.useNodeFrame(props);
 
     return (
-	    <div role="document" data-testid={test_id}
+	    <div id={props.id} role="document" data-testid={test_id}
 	         className={"node-frame " + sizing}
 			 onClick={handle_click}
 			 onMouseDown={handle_mouse_down}
@@ -45,6 +45,7 @@ function NodeFrame(props) {
 		  <div className="node-frame-body">
 			  {child_frames.map((child_frame_props, index) => {
 				  child_frame_props.key = index;
+				  child_frame_props.id = index;
 				  return <NodeFrame {...child_frame_props} />
 			  })}
 		  </div>

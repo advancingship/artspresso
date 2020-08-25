@@ -2,9 +2,10 @@ import { useState } from "react";
 
 const BASE_WIDTH = 220;
 const BASE_HEIGHT = 80;
-const half_base_width = BASE_WIDTH/2;
-const half_base_height = BASE_HEIGHT/2;
+const HALF_BASE_WIDTH = BASE_WIDTH/2;
+const HALF_BASE_HEIGHT = BASE_HEIGHT/2;
 const PX = "px";
+const FIRST = 0;
 
 export default function useNodeFrame(props = {}) {
     const test_id = props.test_id || "node-frame-test-id";
@@ -18,17 +19,27 @@ export default function useNodeFrame(props = {}) {
     const parent_props = props.parent_props;
     const mode = props.mode;
 
+    //give child node-frames access to the parent's props, the mode and an identifying index number
+    const new_parent_props = {
+        ...props,
+        child_frames: child_frames,
+        set_child_frames: set_child_frames,
+        arrange_frame: null,
+    };
     child_frames.map((child, index) => {
-        child.parent_props = {
-            ...props,
-            child_frames: child_frames,
-            set_child_frames: set_child_frames,
-        };
+        child.parent_props = new_parent_props;
         child.mode = props.mode;
         child.child_number = index;
-        child.is_mouse_down = false;
         return child;
     })
+
+    const left_when_middle_is = (x) => {
+        return x - HALF_BASE_WIDTH + PX;
+    }
+
+    const top_when_middle_is = (y) => {
+        return y - HALF_BASE_HEIGHT + PX;
+    }
 
     const handle_creation_click = (e) => {
         let parent = props.parent_props;
@@ -73,41 +84,46 @@ export default function useNodeFrame(props = {}) {
         }
     };
 
-    const left_when_middle_is = (x) => {
-        return x - half_base_width + PX;
-    }
 
-    const top_when_middle_is = (y) => {
-        return y - half_base_height + PX;
-    }
-
-    let is_mouse_down = false;
-
-    const handle_arrangement_mouse_down = () => {
-            is_mouse_down = true;
-    };
-
-    const handle_arrangement_mouse_move = (e) => {
-        if (is_mouse_down === true) {
-            const node_frame = e.currentTarget;
-            node_frame.style.left = left_when_middle_is(e.pageX)
-            node_frame.style.top = top_when_middle_is(e.pageY)
+    const handle_arrangement_mouse_down = (e) => {
+        if (props.parent_props) {
+            props.parent_props.arrange_frame = e.currentTarget;
         }
     };
 
-    const handle_arrangement_mouse_up = (e) => {
-        is_mouse_down = false;
-        const new_style = {...style};
-        new_style.left = e.currentTarget.style.left;
-        new_style.top = e.currentTarget.style.top;
-        const new_child_frames = [...props.parent_props.child_frames];
-        new_child_frames.map((child) => {
-            if (child.child_number === props.child_number) {
-                child.style = new_style;
+    const handle_arrangement_mouse_move = (e) => {
+        if (! props.parent_props) {
+            let arrange_frame;
+            if (child_frames.length > 0 && child_frames[FIRST].parent_props) {
+                arrange_frame = child_frames[FIRST].parent_props.arrange_frame;
             }
-            return child;
-        });
-        props.parent_props.set_child_frames(() => {return new_child_frames});
+            if (arrange_frame) {
+                arrange_frame.style.left = left_when_middle_is(e.pageX)
+                arrange_frame.style.top = top_when_middle_is(e.pageY)
+            }
+        }
+    };
+
+    const handle_arrangement_mouse_up = () => {
+        if (child_frames.length > 0) {
+            const the_parent_props = child_frames[FIRST].parent_props;
+            if (the_parent_props && the_parent_props.arrange_frame) {
+                const arrange_frame_number = parseInt(the_parent_props.arrange_frame.getAttribute("id"));
+                if (! isNaN(arrange_frame_number)) {
+                    const new_child_frames = child_frames.map((child) => {
+                        if (child.child_number === arrange_frame_number) {
+                            const {position, top, left} = the_parent_props.arrange_frame.style;
+                            child.style = {...child.style, position, left, top};
+                        }
+                        return child;
+                    });
+                    set_child_frames(() => {
+                        return new_child_frames
+                    });
+                }
+                the_parent_props.arrange_frame = null;
+            }
+        }
     };
 
     let handle_click;
@@ -124,6 +140,7 @@ export default function useNodeFrame(props = {}) {
             handle_mouse_down = (e) => {
                 handle_arrangement_mouse_down(e)
             };
+        } else {
             handle_mouse_move = (e) => {
                 handle_arrangement_mouse_move(e)
             };
@@ -131,6 +148,7 @@ export default function useNodeFrame(props = {}) {
                 handle_arrangement_mouse_up(e)
             };
         }
+
     }
 
     return {

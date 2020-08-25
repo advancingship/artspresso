@@ -125,24 +125,8 @@ describe("useNodeFrame", () => {
                     const node_frame = {mode: "3", style: {top: "50px"} };
                     const {result} = renderHook(() => useNodeFrame(node_frame));
                     expect(result.current.handle_mouse_down).toBeUndefined()
-                    expect(result.current.handle_mouse_move).toBeUndefined();
-                    expect(result.current.handle_mouse_up).toBeUndefined();
-                });
-            });
-            describe("if the clicked NodeFrame has a parent", () => {
-                it( "it changes the positioning style", () => {
-                    const parent_props = {mode: "3", set_child_frames: jest.fn()};
-                    const child_props = {mode: "3", parent_props: parent_props
-                        , style: {top: "250px", left: "250px"}};
-                    parent_props.child_frames = [child_props];
-                    const {result} = renderHook(() => useNodeFrame({...child_props}));
-                    act(() => {
-                        const mock_mouse_event = {currentTarget: {style: child_props.style}, pageX: 251, pageY: 251}
-                        result.current.handle_mouse_down();
-                        result.current.handle_mouse_move(mock_mouse_event);
-                        result.current.handle_mouse_up(mock_mouse_event);
-                    });
-                    expect(result.current.style).toStrictEqual({top: "211px", left: "141px"});
+                    expect(result.current.handle_mouse_move).toBeDefined();
+                    expect(result.current.handle_mouse_up).toBeDefined();
                 });
             });
         });
