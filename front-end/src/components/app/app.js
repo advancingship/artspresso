@@ -1,27 +1,17 @@
-import React from "react";
-import "./app.sass";
-import NodeFrame from "../node-frame";
-import * as hooks from "./hooks";
-import ControlFrame from "../control-frame";
+const PIN = "Create";
+const PLUCK = "Delete";
+const JET = "Arrange";
+const MODE_NAMES = [PIN, PLUCK, JET];
+const PIN_MODE = "" + MODE_NAMES.indexOf(PIN);
+const PLUCK_MODE = "" + MODE_NAMES.indexOf(PLUCK);
+const JET_MODE = "" + MODE_NAMES.indexOf(JET);
 
-function App() {
-
-    const {mode_names, mode, set_mode} = hooks.useApp({});
-
-    return (
-    <div className="app">
-      <header className="app-header">
-          <h1>Artspresso</h1>
-      </header>
-      <div className="app-main">
-          <NodeFrame date-testid="full-frame-id" mode_names={mode_names}
-                     mode={mode} set_mode={set_mode}
-          />
-          <ControlFrame mode_names={mode_names} mode={mode} set_mode={set_mode} />
-      </div>
-    </div>
-  );
+export {
+    PIN,
+    PLUCK,
+    JET,
+    MODE_NAMES,
+    PIN_MODE,
+    PLUCK_MODE,
+    JET_MODE,
 }
-
-
-export default App;

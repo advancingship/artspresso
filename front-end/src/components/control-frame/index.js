@@ -1,1 +1,1 @@
-export { default } from "./control-frame.js";
+export { default } from "./control-frame-view.js";

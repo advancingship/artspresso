@@ -14,8 +14,8 @@
 		"sudo apt-get update",
 		"sudo apt-get install -y curl",
 		"sudo useradd -d /home/artspresso -m artspresso -p artspresso",
-		"curl -sL https://deb.nodesource.com/setup_10.x | sudo -E bash -",
-		"sudo apt-get install -y nodejs",
+		"sudo apt install -y build-essential checkinstall libssl-dev",
+		"curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.35.1/install.sh | bash",
 		"mkdir -p /home/artspresso/services/",
 		"sudo mkdir -p /tmp/goss/test"		
 	    ]
@@ -24,11 +24,6 @@
 	    "source": "/home/colin/all/artspresso/20190911.200000/repo/cloud/test",
 	    "destination": "/home/artspresso/"
 	},{
-	    "type": "shell",
-	    "inline": [
-		"cd /home/artspresso"
-	    ]
-	},{
 	    "type": "file",
 	    "source": "/home/colin/all/artspresso/20190911.200000/repo/cloud/test/goss.yaml",
 	    "destination": "/home/artspresso/goss.yaml"
@@ -36,12 +31,21 @@
 	    "type": "file",
 	    "source": "/home/colin/all/artspresso/20190911.200000/repo/front-end",
 	    "destination": "/home/artspresso/services/"
-	},{ "type": "shell",
+	},{
+	    "type": "shell",
 	    "inline": [
-		"cd /home/artspresso/services/front-end",
-		"npm install --save react-bootstrap bootstrap node-sass",
-		"npm install --save @testing-library/jest-dom"			    ]
-	  },{
+		". /root/.nvm/nvm.sh",
+		"nvm install 13.12.0",
+		"cp -r /tmp/versions/node /opt",
+		"cd /bin",
+		"ln -s /opt/node/v13.12.0/bin/npm",
+		"ln -s /opt/node/v13.12.0/bin/node",
+		"ln -s /opt/node/v13.12.0/bin/npx",		
+	    	"cd /home/artspresso/services/front-end",
+		"npm install",
+		"npm audit fix"
+	    ]
+	},{
 	    "type": "goss",
 	    "tests": [
 		"/home/colin/all/artspresso/20190911.200000/repo/cloud/test/goss.yaml"
