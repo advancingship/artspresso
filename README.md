@@ -1,14 +1,14 @@
-####Artspresso
+#### Artspresso
 This is a proof of concept project in progress for the purpose of visualizing more or less related ideas.  It comes with terraform code to launch the app from a docker image onto an EC2 instance in the AWS cloud using ECS.
 
 
-####Key
+#### Key
 in any code following, any text with a star to the left and right such as  
    
     *text-here*   
 
 indicates that you would provide a value where the stars and text would be
-####Requirements:
+#### Requirements:
 
 the following steps were tested with   
 
@@ -22,7 +22,7 @@ an AWS account ***WHICH REQUiRES MONEY*** for uses such as launching and hosting
 aws-cli/1.18.102 Python/3.7.4 Linux/5.4.0-51-generic botocore/1.17.25  
 environmental variables as follows  
     
-####Environmental Variables
+#### Environmental Variables
 these are set on your machine to run the terraform operations  
 
 
@@ -51,7 +51,7 @@ the AWS access key ID
 
     AWS_ACCESS_KEY_ID=*access-key-id*
 
-####Installation:
+#### Installation:
 
 clone the project into the directory of your choice  
 
@@ -69,7 +69,7 @@ import the image with docker
  
     docker import image.tar
 
-####Test or use the image:
+#### Test or use the image:
 
 copy the latest image ID from the output of docker images.  
 use 'sec' if imported less than a minute ago, 'min' if under an hour, etc.  
@@ -96,7 +96,7 @@ exit the container if entered
 
     exit
     
-####Tag and push the image to an image repository:
+#### Tag and push the image to an image repository:
 
 then you can tag the image for an Amazon ECR repository URL like 
 000123456789.dkr.ecr.us-east-1.amazonaws.com/repo-name 
@@ -116,7 +116,7 @@ push the image to the repository
 
     docker push *repository-url*
     
-####Test, Dismantle, and Launch the terraform:
+#### Test, Dismantle, and Launch the terraform:
   
 test the terraform if desired from the cloud/test directory
 
