@@ -18,7 +18,7 @@ packer 1.5.4
 docker 19.03.13, build 4484c46d9d  
 python 3.7.4 for pip  
 pip 20.1.1 to install AWS CLI  
-an AWS account ***WHICH REQUiRES MONEY*** for uses such as launching and hosting    
+an AWS account ***WHICH REQUIRES MONEY*** for uses such as launching and hosting    
 aws-cli/1.18.102 Python/3.7.4 Linux/5.4.0-51-generic botocore/1.17.25  
 environmental variables as follows  
     
