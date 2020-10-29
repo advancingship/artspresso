@@ -21,15 +21,15 @@
 	    ]
 	},{
 	    "type": "file",
-	    "source": "/home/colin/all/artspresso/20190911.200000/repo/cloud/test",
+	    "source": "../../../test",
 	    "destination": "/home/artspresso/"
 	},{
 	    "type": "file",
-	    "source": "/home/colin/all/artspresso/20190911.200000/repo/cloud/test/goss.yaml",
+	    "source": "../../../test/goss.yaml",
 	    "destination": "/home/artspresso/goss.yaml"
 	},{
 	    "type": "file",
-	    "source": "/home/colin/all/artspresso/20190911.200000/repo/front-end",
+	    "source": "../../../../front-end",
 	    "destination": "/home/artspresso/services/"
 	},{
 	    "type": "shell",
@@ -48,7 +48,7 @@
 	},{
 	    "type": "goss",
 	    "tests": [
-		"/home/colin/all/artspresso/20190911.200000/repo/cloud/test/goss.yaml"
+		"../../../test/goss.yaml"
 	    ]
 	}
     ],

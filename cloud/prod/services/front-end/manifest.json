@@ -209,7 +209,21 @@
       "artifact_id": "Container",
       "packer_run_uuid": "0150f476-b568-218b-9d20-718307f32f35",
       "custom_data": null
+    },
+    {
+      "name": "docker",
+      "builder_type": "docker",
+      "build_time": 1604004657,
+      "files": [
+        {
+          "name": "image.tar",
+          "size": 827095552
+        }
+      ],
+      "artifact_id": "Container",
+      "packer_run_uuid": "765515a9-a4a8-fc19-0138-003f612ff397",
+      "custom_data": null
     }
   ],
-  "last_run_uuid": "0150f476-b568-218b-9d20-718307f32f35"
+  "last_run_uuid": "765515a9-a4a8-fc19-0138-003f612ff397"
 }
