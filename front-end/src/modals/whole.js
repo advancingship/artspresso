@@ -7,7 +7,7 @@ function brew({terms, mixins, brewer = brew}) {
     return Object.freeze({
         get_parts: () => get_parts(terms),
         with_parts: (parts) => with_parts({parts, terms, mixins, brewer}),
-        see_part: part_id => see_part({part_id, terms}),
+        get_part: part_id => get_part({part_id, terms}),
         with_part: part => with_part({part, terms, mixins, brewer}),
         without_part: part_id => without_part({part_id, terms, mixins, brewer}),
     });
@@ -16,7 +16,8 @@ function brew({terms, mixins, brewer = brew}) {
 function get_parts(terms) {
     return terms.arcs.filter(arc => arc.get_sense() === HAVE_PART).map(arc => arc.get_sink());
 }
-function see_part({part_id, terms}) {
+
+function get_part({part_id, terms}) {
     return (terms.arcs.filter(
         arc => arc.get_sense() === HAVE_PART && arc.get_sink().get_id() === part_id
     ))[0].get_sink();

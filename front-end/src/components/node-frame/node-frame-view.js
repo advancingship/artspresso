@@ -2,12 +2,14 @@ import React from "react";
 import "./node-frame.sass";
 import { DatetimeHelper } from "../../helpers";
 import ContentFrameView from "../content-frame";
+import {NodeNameView, NodeContentView} from "./";
 
 function NodeFrameView(props) {
 	const mode = props.get_mode ? props.get_mode() : undefined
 	const is_whole = !!props.get_parts;
 	const parts = is_whole ? props.get_parts() : undefined;
 	let model = {};
+	let name_on_input, content_on_input;
 	if (props.get_model) {
 		const props_model = props.get_model();
 		model = {
@@ -16,38 +18,20 @@ function NodeFrameView(props) {
 			creation_datetime: props_model.get_creation_datetime(),
 			modification_datetime: props_model.get_modification_datetime(),
 		}
+		if (props.get_name_on_input) {
+			name_on_input = props.get_name_on_input();
+			content_on_input = props.get_content_on_input();
+		}
 	}
 	const sub_view = parts ? parts.map(part => {
-		return <ContentFrameView {...part} />
+		return <ContentFrameView key={part.get_id()} {...part} />
 	}) : undefined
 
 	return (<div data-testid={props.test_id}>
 	      <div className="node-frame-header">
-	        <div className="node-frame-form.control-name input-control">
-	          <input className="node-frame-name input-control"
-	                        type="text"  aria-label="name"
-	                        placeholder="optional name" defaultValue={model.name}
-							autoFocus
-							onClick={(e) => {
-								e.preventDefault();
-								if (mode === "1") {
-									e.stopPropagation();
-								}
-							}}/>
-	        </div>
+			  <NodeNameView {...{model, mode, name_on_input}} />
 	      </div>
-	      <div className="node-frame-form.control-textarea input-control">
-		    <textarea className="node-frame-content input-control"
-						  aria-label="content"
-						  placeholder="optional content"
-					      defaultValue={model.content}
-	                      onClick={(e) => {
-	                        e.preventDefault();
-	                        if (mode === "1") {
-								e.stopPropagation();
-							}
-	                      }} />
-	      </div>
+		  <NodeContentView {...{model, mode, content_on_input}} />
 		  <div className="node-frame-body">
 			  {sub_view}
 		  </div>

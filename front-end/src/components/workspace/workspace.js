@@ -1,4 +1,4 @@
-import {FullFrame, BaseFrame} from "../content-frame"
+import {FullFrame, BaseFrame} from "../content-frame";
 import {DefaultNodeFrame} from "../node-frame";
 
 function get_initial_workspace({mode}) {

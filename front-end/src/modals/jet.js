@@ -20,7 +20,7 @@ function jet_base_frame({app_data, full_frame}) {
 
     app_data.arrange_frame = undefined;
 
-    const new_part = full_frame.see_part(id).jet({left, top});
+    const new_part = full_frame.get_part(id).jet({left, top});
     return full_frame.without_part(id).with_part(new_part)
 }
 

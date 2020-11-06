@@ -9,10 +9,6 @@ describe("<NodeFrameView/> Component", () => {
 		beforeEach(() => {
 			render(<NodeFrameView />);
 		});
-		it("renders a name field", () => {
-			const name_field = screen.getByRole("textbox", {name: /name/i});
-			expect(name_field).toBeInTheDocument();
-		});
 		it("displays the name placeholder by having empty value", () => {
 			const name_field = screen.getByRole("textbox", {name: /name/i});
 			expect(name_field).toHaveDisplayValue("");

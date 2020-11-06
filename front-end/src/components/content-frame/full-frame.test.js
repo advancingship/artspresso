@@ -1,6 +1,5 @@
 import {FullFrame, ContentFrame} from "../content-frame";
 import {Pin, Jet, Whole} from "../../modals";
-import {Me} from "../../helpers";
 import {App} from "../app";
 
 describe("assign_full_handlers", () => {
@@ -36,13 +35,17 @@ describe("assign_full_handlers", () => {
             expect(full_frame.get_on_click()).toBeUndefined()
             jest.spyOn(Jet,"full_jet_on_mouse_up");
             new_full.get_on_mouse_up()();
-            expect(Jet.full_jet_on_mouse_up).toBeCalledWith({app_data, full_frame, setter});
+            expect(Jet.full_jet_on_mouse_up).toBeCalledWith(expect.objectContaining({
+                app_data, full_frame: expect.objectContaining({
+                    signature: full_frame.signature
+                })
+                , setter}));
         });
     });
     describe("pass a mode-less app-data ", () => {
         it ("returns nothing", () => {
             const app_data = {};
-            const full_frame = Me.brew({terms: {arcs: []}});
+            const full_frame = FullFrame.brew({terms: {arcs: []}});
             const setter = jest.fn();
             const new_full_frame = FullFrame.assign_full_handlers({app_data, full_frame, setter});
             expect(new_full_frame).toBeUndefined();
