@@ -1,14 +1,15 @@
 import {Pluck, Jetter, Whole} from "./";
 import Arc from "../components/arc"
-import {ContentFrame} from "../components/content-frame";
+import {BaseFrame, ContentFrame} from "../components/content-frame";
 import {Me} from "../helpers";
+import {DefaultNodeFrame} from "../components/node-frame";
 
     describe("pluck_base_frame", () => {
     let full_frame, part_id, arc_a, arc_b, arc_c, arc_d, model, have_part, not_have_part, new_frame;
     beforeEach(() => {
         part_id = 1;
-        have_part = Whole.HAVE_PART;
-        not_have_part = "not_have_part"
+        have_part = Arc.HAVE_PART;
+        not_have_part = BaseFrame.brew({model: DefaultNodeFrame.brew(), left: "0", top: "0"});
         arc_a = Arc.brew({terms: {sense: have_part, sink:
                     ContentFrame.brew({terms: {id: 3}, mixins: [Jetter.brew]})
             }});
@@ -22,6 +23,8 @@ import {Me} from "../helpers";
                     ContentFrame.brew({terms: {id: 6}, mixins: [Jetter.brew]})
             }});
         model = Me.brew({terms: {arcs: [arc_a, arc_b, arc_c, arc_d]}});
+    });
+    it("removes a base-frame from the full-frame", () => {
         full_frame = ContentFrame.brew({
             terms: {
                 arcs: [arc_a, arc_b, arc_c, arc_d],
@@ -29,8 +32,6 @@ import {Me} from "../helpers";
             }, mixins: [Whole.brew]
         });
         new_frame = Pluck.pluck_base_frame({full_frame, part_id});
-    });
-    it("removes a base-frame from the full-frame", () => {
         expect(new_frame.get_parts().map(part => part.get_id())).toStrictEqual([
             arc_a.get_sink().get_id(), arc_d.get_sink().get_id()
         ])
@@ -40,11 +41,12 @@ import {Me} from "../helpers";
 describe("base_pluck_on_click", () => {
     describe("pass a full-frame, a base-frame id and the state-setter", () => {
         let full_frame, part_id, setter;
+        part_id = "part-id"
         beforeEach(() => {
             full_frame = ContentFrame.brew({
                 terms: {
                     model: Me.brew({terms: {arcs: [{target: {}}]}}),
-                    arcs: [Arc.brew({terms: {sink: {}}})],
+                    arcs: [Arc.brew({terms: {sense: Whole.HAVE_PART, sink: ContentFrame.brew({terms: {id: part_id}})}})],
                 }, mixins: [Whole.brew]
             });
             setter = jest.fn();

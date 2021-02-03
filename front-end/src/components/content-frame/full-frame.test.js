@@ -25,7 +25,7 @@ describe("assign_full_handlers", () => {
             jest.spyOn(Jet,"full_jet_on_mouse_move");
             const event = {};
             new_full.get_on_mouse_move()(event);
-            expect(Jet.full_jet_on_mouse_move).toBeCalledWith({app_data, event});
+            expect(Jet.full_jet_on_mouse_move).toBeCalledWith(expect.objectContaining({app_data, event}));
         });
         it ("sets to full_jet_on_mouse_up", () => {
             const app_data = {mode: App.JET_MODE};

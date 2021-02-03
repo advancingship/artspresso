@@ -9,14 +9,14 @@ const FULL_FRAME_STYLE_NAME = "full-frame";
 const NODE_FRAME_STYLE_NAME = "node-frame";
 const FULL_NODE_STYLE_NAMES = FULL_FRAME_STYLE_NAME + SPACE + NODE_FRAME_STYLE_NAME;
 
-function brew({mode, model}) {
+function brew({mode, model, arcs}) {
     return ContentFrame.brew({
         terms: {
             id: FULL_FRAME_STYLE_NAME + Date.now(),
             class_name: FULL_NODE_STYLE_NAMES,
             mode,
             model,
-            arcs: [],
+            arcs: arcs || [],
         },
         mixins: [Whole.brew]
     });
@@ -45,13 +45,15 @@ function assign_full_handlers({app_data, full_frame, setter}) {
     } else if (app_data.mode === App.JET_MODE) {
         return new_full_frame.with_on_mouse_move({
             on_mouse_move: (event) => {
-                Jet.full_jet_on_mouse_move({app_data, event})
+                Jet.full_jet_on_mouse_move({app_data, event, full_frame: new_full_frame})
             }})
             .with_on_mouse_up({
                 on_mouse_up: () => {
                     Jet.full_jet_on_mouse_up({app_data, full_frame: new_full_frame, setter})
                 }
             });
+    } else if (app_data.mode === App.TIE_MODE) {
+        return new_full_frame;
     }
 }
 

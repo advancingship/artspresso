@@ -1,4 +1,5 @@
 import React from "react";
+import {Jetter} from "../../modals/"
 
 function ContentFrameView(props) {
     const content_frame = props;
@@ -15,10 +16,10 @@ function ContentFrameView(props) {
     if (is_jetter) {
         attributes.style = {
             position: content_frame.get_position(),
-                left: content_frame.get_left(),
-                top: content_frame.get_top(),
-                width: content_frame.get_width(),
-                height: content_frame.get_height(),
+                left: content_frame.get_left() + Jetter.PX,
+                top: content_frame.get_top() + Jetter.PX,
+                width: content_frame.get_width() + Jetter.PX,
+                height: content_frame.get_height() + Jetter.PX,
         }
     }
 

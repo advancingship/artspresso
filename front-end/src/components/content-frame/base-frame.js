@@ -2,6 +2,7 @@ import {ContentFrame} from "./";
 import {App} from "../app";
 import {Pluck, Jet, Jetter} from "../../modals";
 import {Me} from "../../helpers";
+import {Tie} from "../../modals";
 
 const BASE_WIDTH = 220;
 const BASE_HEIGHT = 80;
@@ -12,7 +13,7 @@ const NODE_FRAME_STYLE_NAME = "node-frame";
 const BASE_FRAME_STYLE_NAME = "base-frame";
 const BASE_NODE_STYLE_NAMES = BASE_FRAME_STYLE_NAME + SPACE + NODE_FRAME_STYLE_NAME;
 
-function brew({model, left, top}) {
+function brew({model, left, top, arcs}) {
     return ContentFrame.brew({
         terms: {
             id: BASE_FRAME_STYLE_NAME + Date.now(),
@@ -22,6 +23,7 @@ function brew({model, left, top}) {
             height: BASE_HEIGHT,
             left: left,
             top: top,
+            arcs: arcs || []
         },
         mixins: [Jetter.brew],
     })
@@ -54,6 +56,12 @@ function assign_base_handlers({app_data, full_frame, base_frame, setter}) {
         return new_base_frame.with_on_mouse_down({
             on_mouse_down: (event) => {
                 Jet.base_jet_on_mouse_down({app_data, sink: event.currentTarget});
+            }
+        })
+    } else if (app_data.mode === App.TIE_MODE) {
+        return new_base_frame.with_on_click({
+            on_click: () => {
+                Tie.base_tie_on_click({full_frame, base_frame, app_data, setter});
             }
         })
     }

@@ -1,17 +1,21 @@
 const PIN = "Create";
 const PLUCK = "Delete";
 const JET = "Arrange";
-const MODE_NAMES = [PIN, PLUCK, JET];
+const TIE = "Relate";
+const MODE_NAMES = [PIN, PLUCK, JET, TIE];
 const PIN_MODE = "" + MODE_NAMES.indexOf(PIN);
 const PLUCK_MODE = "" + MODE_NAMES.indexOf(PLUCK);
 const JET_MODE = "" + MODE_NAMES.indexOf(JET);
+const TIE_MODE = "" + MODE_NAMES.indexOf(TIE);
 
 export {
     PIN,
     PLUCK,
     JET,
+    TIE,
     MODE_NAMES,
     PIN_MODE,
     PLUCK_MODE,
     JET_MODE,
+    TIE_MODE,
 }

@@ -2,7 +2,9 @@ import {Pluck} from "./index"
 import {Me} from "../helpers"
 
 function pluck_base_frame({full_frame, part_id}) {
-    return full_frame.without_part(part_id);
+    let new_full_frame = full_frame;
+    new_full_frame = new_full_frame.without_part(part_id);
+    return new_full_frame;
 }
 
 function base_pluck_on_click({full_frame, part_id, setter}) {

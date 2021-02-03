@@ -5,15 +5,17 @@ import {Me}  from "../helpers";
 
 
 describe("full_jet_on_mouse_move", () => {
-    describe("pass the app-data and an event", () => {
-        let event, app_data;
+    describe("pass the app-data an event and a full-frame", () => {
+        let event, app_data, full_frame, arc_a;
         beforeEach(() => {
-            app_data = {arrange_frame: {style: {}}};
+            app_data = {arrange_frame: {style: {}, id: 3}};
             event = {pageX: "200", pageY: "300"};
+            arc_a = Arc.brew({terms: {sense: Whole.HAVE_PART, sink: ContentFrame.brew({terms: {id: 3}, mixins: [Jetter.brew]})}});
+            full_frame = ContentFrame.brew({terms: {arcs: [arc_a]}, mixins: [Whole.brew]});
         });
         describe("whe arrange_frame is defined in app_data", () => {
             it("sets the top and left of a base-frame", () => {
-                Jet.full_jet_on_mouse_move({app_data, event});
+                Jet.full_jet_on_mouse_move({app_data, event, full_frame});
                 expect(app_data.arrange_frame.style.left).toBeDefined();
                 expect(app_data.arrange_frame.style.top).toBeDefined();
             });
@@ -46,7 +48,7 @@ describe("jet", () => {
         it ("sets the left, and top of a base-frame", () => {
             const new_content_frame = Jet.jet_base_frame({app_data: {...app_data}, full_frame});
             expect(new_content_frame.get_parts()[2].get_left()).toBeDefined();
-            expect(new_content_frame.get_parts()[2].get_top()).toEqual(app_data.arrange_frame.style.top);
+            expect(new_content_frame.get_parts()[2].get_top() + "px").toEqual(app_data.arrange_frame.style.top);
         });
     });
 

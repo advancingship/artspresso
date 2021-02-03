@@ -13,15 +13,16 @@ function brew({terms, mixins, brewer = brew}) {
 }
 
 function left_when_middle_is({x, half_width}) {
-    return x - half_width + PX;
+    return x - half_width;
 }
 
 function top_when_middle_is({y, half_height}) {
-    return y - half_height + PX;
+    return y - half_height;
 }
 
 export {
     brew,
     left_when_middle_is,
     top_when_middle_is,
+    PX,
 }

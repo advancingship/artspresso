@@ -4,6 +4,7 @@ export function brew({terms, mixins}) {
     const brewer = brew;
     const mix = Me.get_mix({terms, mixins, brewer});
     const back = {...terms, ...mix};
+    back.arcs = terms.arcs || []
     const front = {
         signature: back.id,
         ...mix,
@@ -12,6 +13,9 @@ export function brew({terms, mixins}) {
         get_id: () => back.id,
         get_key: () => back.key,
         get_mode: () => back.mode,
+        get_arcs: () => back.arcs,
+        with_arc: ({arc}) => with_arc({arc, terms: back, mixins, brewer: brew}),
+        without_arc: ({arc_id}) => without_arc({arc_id, terms: back, mixins, brewer: brew}),
         get_on_click: () => back.on_click,
         get_on_mouse_up: () => back.on_mouse_up,
         get_on_mouse_move: () => back.on_mouse_move,
@@ -37,4 +41,31 @@ export function brew({terms, mixins}) {
         with_content_on_input: ({content_on_input}) => brew({terms: {...back, content_on_input}, mixins}),
     };
     return Object.freeze(front);
+}
+
+function with_arc({arc, terms, mixins, brewer}) {
+    return brewer(
+        {
+            terms: {
+                ...terms,
+                arcs: Me.pin({
+                    array: terms.arcs,
+                    element: arc
+                }),
+            },
+            mixins,
+            brewer,
+        },
+    );
+}
+
+function  without_arc({arc_id, terms, mixins, brewer}) {
+    return brewer({
+        terms: {
+            ...terms,
+            arcs: Object.freeze(terms.arcs.filter(arc => !(arc.get_id() === arc_id))),
+        },
+        mixins,
+        brewer
+    });
 }
