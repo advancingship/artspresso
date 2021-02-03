@@ -1,5 +1,5 @@
 #### Artspresso
-This is a proof of concept project in progress for the purpose of visualizing more or less related ideas.  It comes with terraform code to launch the app from a docker image onto an EC2 instance in the AWS cloud using ECS.
+[artspresso.advancingship.com](http://artspresso.advancingship.com). This is a proof of concept project in progress for the purpose of visualizing more or less related ideas.  It comes with terraform code to launch the app from a docker image onto an EC2 instance in the AWS cloud using ECS.
 
 
 #### Key
