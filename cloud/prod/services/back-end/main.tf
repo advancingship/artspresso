@@ -6,7 +6,7 @@ provider "aws" {
 
 data "aws_subnet" "the_subnet" {
      tags = {
-     	  Name = "prod_subnet"
+     	  Name = "prod_subnet-${var.PROJECT_1_NAME}"
      }
 }
 
@@ -52,7 +52,7 @@ data "aws_iam_role" "execution" {
 
 
 resource "aws_ecs_service" "the_service" {
-  name = "service-${var.PROJECT_1_NAME}"
+  name = "service-back-end-${var.PROJECT_1_NAME}"
   cluster         = data.aws_ecs_cluster.the_cluster.arn
   desired_count = 1
   # Track the latest ACTIVE revision
@@ -77,19 +77,19 @@ resource "aws_ecs_task_definition" "the_task" {
         {
           "hostPort": 80,
           "protocol": "tcp",
-          "containerPort": 3000
+          "containerPort": 80
         }
       ],
       "command": [
-        "npm start"
+        "/opt/runner.sh"
       ],
-      "workingDirectory": "${var.PROJECT_1_WORKING_DIRECTORY}",
+      "workingDirectory": "/",
       "memory": 512,
-      "image": "${var.PROJECT_1_IMAGE_URI}",
+      "image": "886281015718.dkr.ecr.us-east-1.amazonaws.com/artspresso-back-end:latest",
       "interactive": true,
       "essential": true,
       "pseudoTerminal": true,
-      "name": "${var.task_name}"
+      "name": "${var.task_name}-back-end"
     }
   ]
 DEFINITION
@@ -97,7 +97,7 @@ DEFINITION
 
 
 resource "aws_launch_template" "the_launch" {
-  name_prefix   = "prefix_${var.PROJECT_1_NAME}"
+  name_prefix   = "prefix_back_end_${var.PROJECT_1_NAME}"
   image_id      = data.aws_ami.amazon_linux_ecs.id
   instance_type = "t2.micro"
 

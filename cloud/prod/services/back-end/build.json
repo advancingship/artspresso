@@ -1,0 +1,55 @@
+{
+    "variables": {
+    },
+    "builders": [{
+	"type": "docker",
+	"image": "ubuntu:16.04",
+	"export_path" : "image.tar"
+    }],
+    "provisioners" : [
+	{
+	    "type": "shell",
+	    "inline": [
+		"sleep 30",
+		"apt-get update",
+		"apt-get install -y sudo"		
+	    ]
+	},{
+	    "type": "file",
+	    "source": "../../../../back_end",
+	    "destination": "/opt/services/"
+	},{
+	    "type": "file",
+	    "source" : "./runner.sh",
+	    "destination" : "/opt/runner.sh"
+	},{
+	    "type": "file",
+	    "source" : "./provision.sh",
+	    "destination" : "/opt/provision.sh"
+	},{
+	    "type": "shell",
+	    "inline": [
+		"chmod o+x /opt/runner.sh",
+		"chmod o+x /opt/provision.sh",
+		"/opt/provision.sh"
+	    ]
+	},{
+	    "type": "file",
+	    "source": "./pg_hba.conf",
+	    "destination": "/etc/postgresql/9.5/main/pg_hba.conf"
+	},{
+	    "type": "shell",
+	    "inline": [
+		"chown postgres /etc/postgresql/9.5/main/pg_hba.conf",
+		"chgrp postgres /etc/postgresql/9.5/main/pg_hba.conf"
+	    ]
+	}
+    ],
+    "post-processors": [
+	{
+	    "type": "manifest",
+	    "output": "manifest.json",
+	    "strip_path": true
+	}
+    ]
+}
