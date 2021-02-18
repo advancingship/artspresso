@@ -1,0 +1,9 @@
+{% if latest_node_frame_list %}
+    <ul>
+    {% for node_frame in latest_node_frame_list %}
+         <li><a href="{% url 'detail' node_frame.id %}">{{ node_frame.name }}</a></li>
+    {% endfor %}
+         </ul>
+{% else %}
+    <p>No node-frames are available.</p>
+{% endif %}
