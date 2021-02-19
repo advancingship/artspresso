@@ -5,6 +5,7 @@ urlpatterns = [
     # ex: /node_frames/
     path('', views.index, name='index'),
     # ex: /node_frames/5/
+    
     path('<int:node_frame_id>/', views.detail, name='node-frame-detail'),
     path('x/<int:node_frame_id>/', views.detail, name='detail'),    
 
