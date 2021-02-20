@@ -9,7 +9,7 @@ class NodeFrame(models.Model):
     modification_datetime = models.DateTimeField(auto_now=True)
 
     def get_absolute_url(self):
-        return reverse("node-frame-detail", kwargs={"pk", self.pk})
+        return reverse("detail", kwargs={"pk", self.pk})
 
     def __str__(self):
         return self.name

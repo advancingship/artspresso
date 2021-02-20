@@ -9,10 +9,10 @@ const JET_MODE = "" + MODE_NAMES.indexOf(JET);
 const TIE_MODE = "" + MODE_NAMES.indexOf(TIE);
 const URLS = {};
 
-if (process.env.NODE_ENV !== "production") {
-    URLS.back_end_api = "localhost";
-} else {
+if (process.env.NODE_ENV === "production") {
     URLS.back_end_api = "api.advancingship.com";
+} else {
+    URLS.back_end_api = "";
 }
 
 

@@ -1,3 +1,5 @@
+from django.conf.urls import include, url
+from django.views.generic import DetailView, ListView
 from django.urls import path
 from . import views
 
@@ -11,5 +13,7 @@ urlpatterns = [
 
     path('add/', views.NodeFrameCreate.as_view(), name='node-frame-add'),
     path('<int:pk>/update', views.NodeFrameUpdate.as_view(), name='node-frame-update'),
-    path('<int:pk>/delete/', views.NodeFrameDelete.as_view(), name='node-frame-delete'),    
+    path('<int:pk>/delete/', views.NodeFrameDelete.as_view(), name='node-frame-delete'),
+    #path('new/', views.NodeFrameCreate.as_view(), name='node-frame-add'),
+    path('new/', views.new, name='node-frame-new'),
 ]

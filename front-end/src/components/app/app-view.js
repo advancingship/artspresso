@@ -5,33 +5,30 @@ import ControlFrameView from "../control-frame";
 import WorkspaceView from "../workspace/";
 import {App} from "./";
 
+import {FrameService} from "../../frame-service"
+
 function AppView() {
 
-    const [mode, set_mode] = useState(App.PIN_MODE);
-    const [fake, set_fake] = useState("fake")
-    let result_items, result_error;
-    const x = async () => {
-        await fetch("/frames/", {
-            mode: 'no-cors'
-        })
-            .then(res => res.json())
-            .then(
-                (result) => {
-                    result_items = JSON.parse(result)[0]
-                    set_fake(fake => JSON.stringify(result_items))
-                },
-                (error) => {
-                    result_error = error;
-                });
+    const [fake, set_fake] = useState("fake");
+    const [frames, set_frames] = useState();
+
+    const success = data => {
+        set_frames(data);
     }
-    x();
+    const top_on_click = () => {
+        FrameService.pop_frames({terms: {success}});
+        console.log("TOP ON CLICK")
+        //FrameService.create_frame({terms: {body: {name: "fake"}, success }})
+    }
+
+    const [mode, set_mode] = useState(App.PIN_MODE);
     return (
     <div className="app">
       <header className="app-header">
-          <h1>Artspresso {fake}</h1>
+          <h1 onClick={top_on_click}>Artspresso {fake}</h1>
       </header>
       <div className="app-main">
-          <WorkspaceView mode={mode} />
+          <WorkspaceView mode={mode} frames={frames} />
           <ControlFrameView mode={mode} set_mode={set_mode} />
       </div>
     </div>
