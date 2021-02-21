@@ -73,16 +73,19 @@ function assign_base_handlers({app_data, full_frame, base_frame, setter}) {
 }
 
 function field_on_input({base_frame, full_frame, setter, method_name, argument_name}) {
-    const id = base_frame.get_id();
+    const pk = base_frame.get_id();
     return ({value}) => {
         const argument = {};
         argument[argument_name] = value;
-        return Me.return_state({
-            state: full_frame.without_part(id).with_part(full_frame.get_part(id).with_model({
-                model: base_frame.get_model()[method_name](argument)
-            })),
-            setter
-        });
+        async function success(data) {
+            return Me.return_state({
+                state: full_frame.without_part(pk).with_part(full_frame.get_part(pk).with_model({
+                    model: base_frame.get_model()[method_name](argument)
+                })),
+                setter
+            });
+        }
+        FrameService.update_frame({terms: {success, pk, body: argument}});
     }
 }
 

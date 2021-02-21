@@ -12,7 +12,7 @@ urlpatterns = [
     path('x/<int:node_frame_id>/', views.detail, name='detail'),    
 
     path('add/', views.NodeFrameCreate.as_view(), name='node-frame-add'),
-    path('<int:pk>/update', views.NodeFrameUpdate.as_view(), name='node-frame-update'),
+    # path('<int:pk>/update', views.NodeFrameUpdate.as_view(), name='node-frame-update'),
 
     #ex: /frames/1/delete/
     path('<int:pk>/delete/', views.delete, name='node-frame-delete'),
@@ -20,6 +20,9 @@ urlpatterns = [
 
     #works
     path('new/', views.new, name='node-frame-new'),
+
+    #works
+    path('<int:pk>/update/', views.update, name='node-frame-update'),
 
     #object of type NodeFrame is not JSON serializable
     path('make/', views.make, name='node-frame-make'),    

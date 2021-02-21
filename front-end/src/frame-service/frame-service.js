@@ -36,6 +36,29 @@ async function create_frame({terms}) {
     return api_call({terms});
 }
 
+async function update_frame({terms}) {
+    terms.path = "/frames/" + terms.pk + "/update/"
+    terms.init = {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(terms.body) // body terms type must match "Content-Type" header
+    }
+//    return api_call({terms});
+    let all_terms = {
+        api: API,
+        success: data => console.log("POP DATA:" + data),
+        error: error => console.log("POP ERROR:" + error),
+    };
+    all_terms = {...all_terms, ...terms};
+    return await fetch((all_terms.api || API) + all_terms.path, all_terms.init)
+        .then(
+            all_terms.success,
+            all_terms.error
+        );
+}
+
 async function delete_frame({terms}) {
     terms.path = "/frames/" + terms.pk + "/delete/"
     terms.init = {
@@ -63,5 +86,6 @@ export {
     API,
     pop_frames,
     create_frame,
+    update_frame,
     delete_frame,
 }
