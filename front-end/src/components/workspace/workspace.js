@@ -1,21 +1,10 @@
-import {FullFrame, BaseFrame} from "../content-frame";
-import {DefaultNodeFrame, NodeFrame} from "../node-frame";
-import Arc from "../arc"
+import {FullFrame, BaseFrame} from "../content-frame"
+import {DefaultNodeFrame} from "../node-frame";
 
-function get_initial_workspace({mode, frames}) {
-    let arcs;
-    if (frames) {
-        arcs = frames.map(frame => {
-            return Arc.brew({terms: {
-                    sense: Arc.HAVE_PART,
-                    sink: BaseFrame.brew({model: NodeFrame.brew({terms: {pk: frame.pk, fields: frame.fields}})})
-                }})
-        });
-    }
+function get_initial_workspace({mode}) {
     return FullFrame.brew({
-        mode: mode,
+        mode,
         model: DefaultNodeFrame.brew(),
-        arcs: arcs,
     });
 }
 

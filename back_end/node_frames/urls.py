@@ -13,7 +13,14 @@ urlpatterns = [
 
     path('add/', views.NodeFrameCreate.as_view(), name='node-frame-add'),
     path('<int:pk>/update', views.NodeFrameUpdate.as_view(), name='node-frame-update'),
-    path('<int:pk>/delete/', views.NodeFrameDelete.as_view(), name='node-frame-delete'),
+
+    #ex: /frames/1/delete/
+    path('<int:pk>/delete/', views.delete, name='node-frame-delete'),
     #path('new/', views.NodeFrameCreate.as_view(), name='node-frame-add'),
+
+    #works
     path('new/', views.new, name='node-frame-new'),
+
+    #object of type NodeFrame is not JSON serializable
+    path('make/', views.make, name='node-frame-make'),    
 ]

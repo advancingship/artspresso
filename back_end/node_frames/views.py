@@ -55,11 +55,41 @@ def new(request):
                     node_name = json_data['name']
                     p = NodeFrame(name=node_name)
                     p.save()
-                    got = NodeFrame.objects.all().order_by('-id')[:1]
+                    got = NodeFrame.objects.all().filter(pk=p.pk)
 		except KeyError:
 			return HttpResponseServerError("Malformed Data, missing key")
 		return JsonResponse(serializers.serialize('json', got), safe=False)
 
 	else:
 		return HttpResponse("Only JSON post accepted", status=404)
+            
+@csrf_exempt
+def make(request):
+	if True | ( request.method == 'POST' ):
+		json_data = json.loads(request.body.decode('utf-8'))
+		try:
+                    node_name = json_data['name']
+                    p = NodeFrame(name=node_name)
+                    p.save()
+                    got = NodeFrame.objects.all().filter(pk=p.pk)
+		except KeyError:
+			return HttpResponseServerError("Malformed Data, missing key")
+		return JsonResponse(json.dumps(p))
+
+	else:
+		return HttpResponse("Only JSON post accepted", status=404)
+
+@csrf_exempt
+def delete(request, pk):
+	if True | ( request.method == 'POST' ):
+
+		try:
+                    p = NodeFrame(pk=pk)
+                    p.delete()
+		except KeyError:
+			return HttpResponseServerError("Malformed Data, missing key")
+		return JsonResponse({"code": 200, "msg": "successful delete"})
+
+	else:
+		return JsonResponse({"Only JSON post accepted"}, status=404)
 

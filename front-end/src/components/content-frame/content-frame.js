@@ -4,14 +4,15 @@ export function brew({terms, mixins}) {
     const brewer = brew;
     const mix = Me.get_mix({terms, mixins, brewer});
     const back = {...terms, ...mix};
+    const identity = back.model ? back.model.get_identity() : back.id;
     back.arcs = terms.arcs || []
     const front = {
-        signature: back.id,
+        signature: identity,
         ...mix,
         get_model: () => back.model,
         get_class_name: () => back.class_name,
-        get_id: () => back.id,
-        get_key: () => back.key,
+        get_id: () => identity,
+        get_key: () => identity,
         get_mode: () => back.mode,
         get_arcs: () => back.arcs,
         with_arc: ({arc}) => with_arc({arc, terms: back, mixins, brewer: brew}),

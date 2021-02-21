@@ -24,7 +24,7 @@ function get_parts(terms) {
 
 function get_part({part_id, terms}) {
     return (terms.arcs.filter(
-        arc => arc.get_sense().get_id() === get_part_sense(terms).get_id() && arc.get_sink().get_id() === part_id
+        arc => arc.get_sense().get_id() === get_part_sense(terms).get_id() && arc.get_sink().get_id() == part_id
     ))[0].get_sink();
 }
 

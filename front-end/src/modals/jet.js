@@ -43,7 +43,7 @@ function full_jet_on_mouse_move({app_data, event, full_frame}) {
 }
 
 function jet_base_frame({app_data, full_frame}) {
-    const id = app_data.arrange_frame.id;
+    const id = parseInt(app_data.arrange_frame.id);
     const left = app_data.arrange_frame.style.left;
     const top = app_data.arrange_frame.style.top;
 

@@ -3,6 +3,7 @@ import {App} from "../app";
 import {Pluck, Jet, Jetter} from "../../modals";
 import {Me} from "../../helpers";
 import {Tie} from "../../modals";
+import {FrameService} from "../../frame-service";
 
 const BASE_WIDTH = 220;
 const BASE_HEIGHT = 80;
@@ -45,25 +46,29 @@ function assign_base_handlers({app_data, full_frame, base_frame, setter}) {
                 event.preventDefault();
                 event.stopPropagation();
             }
-        })
+        });
     } else if (app_data.mode === App.PLUCK_MODE) {
         return new_base_frame.with_on_click({
             on_click: () => {
-                Pluck.base_pluck_on_click({full_frame, part_id: new_base_frame.get_id(), setter});
+                const pk = new_base_frame.get_id();
+                async function success(data) {
+                    Pluck.base_pluck_on_click({full_frame, part_id: pk, setter});
+                }
+                FrameService.delete_frame({terms: {success, pk}});
             }
-        })
+        });
     } else if (app_data.mode === App.JET_MODE) {
         return new_base_frame.with_on_mouse_down({
             on_mouse_down: (event) => {
                 Jet.base_jet_on_mouse_down({app_data, sink: event.currentTarget});
             }
-        })
+        });
     } else if (app_data.mode === App.TIE_MODE) {
         return new_base_frame.with_on_click({
             on_click: () => {
                 Tie.base_tie_on_click({full_frame, base_frame, app_data, setter});
             }
-        })
+        });
     }
 }
 

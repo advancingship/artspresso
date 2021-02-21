@@ -3,6 +3,7 @@ import * as Jet from "./jet";
 import * as Pluck from "./pluck";
 import * as Jetter from "./jetter";
 import * as Whole from "./whole"
+import * as Identifiable from "./identifiable";
 import * as Nameable from "./nameable";
 import * as ContentEditable from "./content-editable";
 import * as Tie from "./tie";
@@ -15,6 +16,7 @@ export {
     Pluck,
     Jetter,
     Whole,
+    Identifiable,
     Nameable,
     ContentEditable,
     Tie,

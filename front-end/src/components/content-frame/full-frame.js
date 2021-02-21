@@ -2,7 +2,9 @@ import {BaseFrame, ContentFrame} from "./";
 import {Pin, Jet, Jetter, Whole} from "../../modals";
 import {App} from "../app";
 import {DefaultNodeFrame} from "../node-frame";
+import NodeFrameView, {NodeFrame} from "../node-frame";
 import {Me} from "../../helpers";
+import {FrameService} from "../../frame-service"
 
 const SPACE = " ";
 const FULL_FRAME_STYLE_NAME = "full-frame";
@@ -31,13 +33,23 @@ function assign_full_handlers({app_data, full_frame, setter}) {
     if (app_data.mode === App.PIN_MODE) {
         return new_full_frame.with_on_click({
             on_click: (event) => {
-                Pin.full_pin_on_click({full_frame: new_full_frame, event,
-                    model: BaseFrame.brew({
-                        model: DefaultNodeFrame.brew(),
-                        left: Jetter.left_when_middle_is({x: event.pageX, half_width: BaseFrame.HALF_BASE_WIDTH}),
-                        top: Jetter.top_when_middle_is({y: event.pageY, half_height: BaseFrame.HALF_BASE_HEIGHT}),
-                    }),
-                    setter});
+                const event_x = event.pageX;
+                const event_y = event.pageY;
+                async function success(data) {
+                    const terms = data[0];
+                    terms.fields.left = Jetter.left_when_middle_is({x: event_x, half_width: BaseFrame.HALF_BASE_WIDTH});
+                    terms.fields.top = Jetter.top_when_middle_is({y: event_y, half_height: BaseFrame.HALF_BASE_HEIGHT});
+                    Pin.full_pin_on_click({full_frame: new_full_frame, event,
+                        model: BaseFrame.brew({
+                            model: NodeFrame.brew({terms}),
+                            left: terms.fields.left,
+                            top: terms.fields.top,
+                        }),
+                        setter});
+                }
+                const body = {name: "new"};
+                const terms = FrameService.create_frame({terms: {success, body}});
+                let fake = true;
             }
         });
     } else if (app_data.mode === App.PLUCK_MODE) {

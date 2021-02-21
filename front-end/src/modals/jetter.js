@@ -1,10 +1,11 @@
 const FIXED = "fixed";
+const RELATIVE = "relative";
 const PX = "px";
 
 function brew({terms, mixins, brewer = brew}) {
     return Object.freeze({
         jet: ({left, top}) => brewer({terms: {...terms, left, top}, mixins, brewer}),
-        get_position: () => FIXED,
+        get_position: () => ((terms.left || terms.top) ? FIXED : RELATIVE),
         get_left: () => terms.left,
         get_top: () => terms.top,
         get_width: () => terms.width,
