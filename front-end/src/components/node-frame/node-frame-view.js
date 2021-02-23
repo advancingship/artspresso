@@ -14,6 +14,7 @@ function NodeFrameView(props) {
 	if (props.get_model) {
 		const props_model = props.get_model();
 		model = {
+			identity: props_model.get_identity(),
 			name: props_model.get_name(),
 			content: props_model.get_content(),
 			creation_datetime: props_model.get_creation_datetime(),

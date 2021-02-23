@@ -65,7 +65,7 @@ def new(request):
             
 @csrf_exempt
 def update(request, pk):
-	if True | ( request.method == 'POST' ):
+	if True | ( request.method == 'PUT' ):
 		json_data = json.loads(request.body.decode('utf-8'))
 		try:
                     print("pk")
@@ -88,10 +88,11 @@ def update(request, pk):
                             setattr(p, k, v)
                     print(p.creation_datetime)                            
                     p.save()
+                    got = [NodeFrame.objects.get(pk=pk)]
 		except KeyError:
 			return HttpResponseServerError("Malformed Data, missing key")
-		return JsonResponse({"code": 200, "msg": "successful update"})
-
+                #return JsonResponse({"code": 200, "msg": "successful update"}) 
+		return JsonResponse(serializers.serialize('json', got), safe=False)
 	else:
 		return HttpResponse("Only JSON post accepted", status=404)
             

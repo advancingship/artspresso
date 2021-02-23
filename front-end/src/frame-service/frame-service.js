@@ -1,85 +1,89 @@
 import {URLS} from "../components/app/app";
 
 const API = URLS.back_end_api;
+const GET = "GET";
+const POST = "POST"
+const PUT = "PUT";
+const DELETE = "DELETE";
 
-async function api_call({terms}) {
-    let all_terms = {
+function brew_api_terms({terms}) {
+    const all_terms = {
         api: API,
-        success: data => console.log("POP DATA:" + data),
-        error: error => console.log("POP ERROR:" + error),
+        path: terms.path,
+        init: {
+            method: terms.method,
+            headers: {
+                'Content-Type': 'application/json'
+            },
+        },
+        success: terms.success || (data => console.log("POP DATA:" + data)),
+        error: terms.error || (error => console.log("POP ERROR:" + error)),
     };
-    all_terms = {...all_terms, ...terms};
-    return await fetch((all_terms.api || API) + all_terms.path, all_terms.init)
+    if (terms.body) {all_terms.init.body = JSON.stringify(terms.body)}
+    return all_terms;
+}
+
+async function do_get({terms}) {
+    const api_terms = brew_api_terms({terms: {...terms, method: GET}});
+    return await fetch((api_terms.api || API) + api_terms.path, api_terms.init)
         .then(response => response.json())
         .then(json => JSON.parse(json))
         .then(
-            all_terms.success,
-            all_terms.error
+            api_terms.success,
+            api_terms.error
+        );
+}
+
+async function do_post({terms}) {
+    const api_terms = brew_api_terms({terms: {...terms, method: POST}});
+    return await fetch((api_terms.api || API) + api_terms.path, api_terms.init)
+        .then(response => response.json())
+        .then(json => JSON.parse(json))
+        .then(
+            api_terms.success,
+            api_terms.error
+        );
+}
+
+async function do_put({terms}) {
+    const api_terms = brew_api_terms({terms: {...terms, method: PUT}});
+    return await fetch((api_terms.api || API) + api_terms.path, api_terms.init)
+        .then(response => response.json())
+        .then(json => JSON.parse(json))
+        .then(
+            api_terms.success,
+            api_terms.error
+        );
+}
+
+async function do_delete({terms}) {
+    const api_terms = brew_api_terms({terms: {...terms, method: DELETE}});
+    return await fetch((api_terms.api || API) + api_terms.path, api_terms.init)
+        .then(
+            api_terms.success,
+            api_terms.error
         );
 }
 
 async function pop_frames({terms}) {
     terms.path = "/frames/";
-    return api_call({terms});
+    return do_get({terms});
 }
 
 async function create_frame({terms}) {
     terms = terms || {};
     terms.path = "/frames/new/"
-    terms.init = {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(terms.body) // body terms type must match "Content-Type" header
-    }
-    return api_call({terms});
+    return do_post({terms});
 }
 
 async function update_frame({terms}) {
     terms.path = "/frames/" + terms.pk + "/update/"
-    terms.init = {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(terms.body) // body terms type must match "Content-Type" header
-    }
-//    return api_call({terms});
-    let all_terms = {
-        api: API,
-        success: data => console.log("POP DATA:" + data),
-        error: error => console.log("POP ERROR:" + error),
-    };
-    all_terms = {...all_terms, ...terms};
-    return await fetch((all_terms.api || API) + all_terms.path, all_terms.init)
-        .then(
-            all_terms.success,
-            all_terms.error
-        );
+    return do_put({terms});
 }
 
 async function delete_frame({terms}) {
-    terms.path = "/frames/" + terms.pk + "/delete/"
-    terms.init = {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({fake: "fake"}) // body terms type must match "Content-Type" header
-    }
-//    return api_call({terms});
-    let all_terms = {
-        api: API,
-        success: data => console.log("POP DATA:" + data),
-        error: error => console.log("POP ERROR:" + error),
-    };
-    all_terms = {...all_terms, ...terms};
-    return await fetch((all_terms.api || API) + all_terms.path, all_terms.init)
-        .then(
-            all_terms.success,
-            all_terms.error
-        );
+    terms.path = "/frames/" + terms.pk + "/delete/";
+    return do_delete({terms});
 }
 
 export {

@@ -4,6 +4,7 @@ import {Pluck, Jet, Jetter} from "../../modals";
 import {Me} from "../../helpers";
 import {Tie} from "../../modals";
 import {FrameService} from "../../frame-service";
+import {NodeFrame} from "../node-frame/";
 
 const BASE_WIDTH = 220;
 const BASE_HEIGHT = 80;
@@ -27,7 +28,7 @@ function brew({model, left, top, arcs}) {
             arcs: arcs || []
         },
         mixins: [Jetter.brew],
-    })
+    });
 }
 
 function assign_base_handlers({app_data, full_frame, base_frame, setter}) {
@@ -74,18 +75,31 @@ function assign_base_handlers({app_data, full_frame, base_frame, setter}) {
 
 function field_on_input({base_frame, full_frame, setter, method_name, argument_name}) {
     const pk = base_frame.get_id();
-    return ({value}) => {
+    return ({value, should_call_api}) => {
         const argument = {};
         argument[argument_name] = value;
-        async function success(data) {
+        let model;
+        if (should_call_api) {
+            async function success(data) {
+                const terms = data[0];
+                model = NodeFrame.brew({terms});
+                return Me.return_state({
+                    state: full_frame.without_part(pk).with_part(
+                        full_frame.get_part(pk).with_model({model})
+                    ),
+                    setter
+                });
+            }
+            FrameService.update_frame({terms: {success, pk, body: argument}});
+        } else {
+            model = base_frame.get_model()[method_name](argument);
             return Me.return_state({
-                state: full_frame.without_part(pk).with_part(full_frame.get_part(pk).with_model({
-                    model: base_frame.get_model()[method_name](argument)
-                })),
+                state: full_frame.without_part(pk).with_part(
+                    full_frame.get_part(pk).with_model({model})
+                ),
                 setter
             });
         }
-        FrameService.update_frame({terms: {success, pk, body: argument}});
     }
 }
 
