@@ -1,21 +1,25 @@
-import {ModelViewable, Timestamped} from "../../modals";
+import {ModelViewable, Timestamped, Identifiable} from "../../modals";
 
 const HAVE_PART = Object.freeze({get_id: () => "have_part"});
 const LEFT = "left";
 const RIGHT = "right"
 
 const brew = function ({terms}) {
-    const id = "arc" + Date.now();
-    const left_id = id + "-" + LEFT;
-    const right_id = id + "-" + RIGHT;
+    if (terms && terms.pk) {
+        const pk = terms.pk
+        terms = terms.fields;
+        terms.identity = pk;
+    }
+    const left_id = terms.identity + "-" + LEFT;
+    const right_id = terms.identity + "-" + RIGHT;
     return Object.freeze({
-        get_id: () => id,
         get_left_id: () => left_id,
         get_right_id: () => right_id,
         get_sense: () => terms.sense,
         get_sink: () => terms.sink,
         with_sense: ({sense}) => brew({terms: {...terms, sense}}),
         with_sink: ({sink}) => brew({terms: {...terms, sink}}),
+        ...Identifiable.brew({terms, brewer: brew}),
         ...ModelViewable.brew({terms, brewer: brew}),
         ...Timestamped.brew({terms, brewer: brew}),
     });

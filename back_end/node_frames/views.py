@@ -3,7 +3,7 @@ from django.http import HttpResponse, Http404, JsonResponse, HttpResponseServerE
 
 from django.urls import reverse_lazy
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
-from node_frames.models import NodeFrame
+from node_frames.models import NodeFrame, Arc
 from rest_framework.response import Response
 from rest_framework.decorators import api_view, renderer_classes
 from rest_framework.renderers import JSONRenderer, TemplateHTMLRenderer
@@ -44,9 +44,7 @@ def detail(request, node_frame_id):
     return render(request, 'node_frames/detail.html', {'node_frame': node_frame})
 
 # @csrf_protect
-# needed to ensure that JSON post requests work
-			#node_frame = dict(json_data['node_frame'])
-			#name = node_frame['name']@
+
 @csrf_exempt
 def new(request):
 	if True | ( request.method == 'POST' ):
@@ -55,6 +53,7 @@ def new(request):
                     node_name = json_data['name']
                     p = NodeFrame(name=node_name)
                     p.save()
+
                     got = NodeFrame.objects.filter(pk=p.pk)
 		except KeyError:
 			return HttpResponseServerError("Malformed Data, missing key")
@@ -68,26 +67,16 @@ def update(request, pk):
 	if True | ( request.method == 'PUT' ):
 		json_data = json.loads(request.body.decode('utf-8'))
 		try:
-                    print("pk")
-                    print(pk)
-                    print("json")
-                    print(json_data)
-                    from node_frames.models import NodeFrame
-                    #json_data = {"name": "nn"}
                     keep = ['name', 'content']
                     update_kept = {k: json_data.get(k) for k in keep}
-                    print("update_kept")
-                    print(update_kept)
-                    #p = NodeFrame(pk=17770)                    
                     p = NodeFrame.objects.get(pk=pk)
-                    print("creation")
-                    print(p.creation_datetime)
-                    print("p.setattrs")
+
                     for k , v in update_kept.items():
                         if v:
                             setattr(p, k, v)
-                    print(p.creation_datetime)                            
+
                     p.save()
+
                     got = [NodeFrame.objects.get(pk=pk)]
 		except KeyError:
 			return HttpResponseServerError("Malformed Data, missing key")
@@ -126,3 +115,61 @@ def delete(request, pk):
 	else:
 		return JsonResponse({"Only JSON post accepted"}, status=404)
 
+@csrf_exempt
+def new_arc(request):
+	if True | ( request.method == 'POST' ):
+		json_data = json.loads(request.body.decode('utf-8'))
+		try:
+                    source=json_data['source']
+                    sense=json_data['sense']
+                    sink=json_data['sink']                    
+
+                    p = Arc(source, sense, sink)
+                    p.save()
+
+                    got = Arc.objects.filter(pk=p.pk)
+		except KeyError:
+			return HttpResponseServerError("Malformed Data, missing key")
+		return JsonResponse(serializers.serialize('json', got), safe=False)
+
+	else:
+		return HttpResponse("Only JSON post accepted", status=404)
+            
+@csrf_exempt
+def update_arc(request, pk):
+	if True | ( request.method == 'PUT' ):
+		json_data = json.loads(request.body.decode('utf-8'))
+		try:
+                    keep = ['source', 'sense', 'sink']
+                    update_kept = {k: json_data.get(k) for k in keep}
+
+                    p = Arc.objects.get(pk=pk)
+
+                    for k , v in update_kept.items():
+                        if v:
+                            setattr(p, k, v)
+
+                    p.save()
+
+                    got = [Arc.objects.get(pk=pk)]
+
+		except KeyError:
+			return HttpResponseServerError("Malformed Data, missing key")
+		return JsonResponse(serializers.serialize('json', got), safe=False)
+	else:
+		return HttpResponse("Only JSON post accepted", status=404)
+            
+@csrf_exempt
+def delete_arc(request, pk):
+	if True | ( request.method == 'POST' ):
+
+		try:
+                    p = Arc(pk=pk)
+                    p.delete()
+		except KeyError:
+			return HttpResponseServerError("Malformed Data, missing key")
+		return JsonResponse({"code": 200, "msg": "successful delete"})
+
+	else:
+		return JsonResponse({"Only JSON post accepted"}, status=404)
+            

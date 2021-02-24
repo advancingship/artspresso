@@ -47,9 +47,8 @@ function assign_full_handlers({app_data, full_frame, setter}) {
                         }),
                         setter});
                 }
-                const body = {name: "new"};
+                const body = {name: ""};
                 const terms = FrameService.create_frame({terms: {success, body}});
-                let fake = true;
             }
         });
     } else if (app_data.mode === App.PLUCK_MODE) {

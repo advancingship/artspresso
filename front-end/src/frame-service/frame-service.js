@@ -86,10 +86,17 @@ async function delete_frame({terms}) {
     return do_delete({terms});
 }
 
+async function create_arc({terms}) {
+    terms = terms || {};
+    terms.path = "/frames/new_arc/"
+    return do_post({terms});
+}
+
 export {
     API,
     pop_frames,
     create_frame,
     update_frame,
     delete_frame,
+    create_arc,
 }

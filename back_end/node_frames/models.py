@@ -7,6 +7,7 @@ class NodeFrame(models.Model):
     content = models.TextField()
     creation_datetime = models.DateTimeField(auto_now_add=True, editable=False)
     modification_datetime = models.DateTimeField(auto_now=True)
+    
 
     def get_absolute_url(self):
         return reverse("detail", kwargs={"pk", self.pk})
@@ -14,4 +15,10 @@ class NodeFrame(models.Model):
     def __str__(self):
         return self.name
     
-    
+
+class Arc(models.Model):
+    source = models.ForeignKey(NodeFrame, on_delete=models.CASCADE)
+    sense = models.ForeignKey(NodeFrame, on_delete=models.SET_NULL, related_name="senses", null=True)
+    sink = models.ForeignKey(NodeFrame, on_delete=models.SET_NULL, related_name="sinks", null=True)
+    creation_datetime = models.DateTimeField(auto_now_add=True, editable=False)
+    modification_datetime = models.DateTimeField(auto_now=True)

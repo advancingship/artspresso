@@ -25,5 +25,9 @@ urlpatterns = [
     path('<int:pk>/update/', views.update, name='node-frame-update'),
 
     #object of type NodeFrame is not JSON serializable
-    path('make/', views.make, name='node-frame-make'),    
+    path('make/', views.make, name='node-frame-make'),
+
+    path('new_arc/', views.new_arc, name='arc-new'),
+    path('<int:pk>/update_arc/', views.update_arc, name='arc-update'),
+    path('<int:pk>/delete_arc/', views.delete_arc, name='arc-delete'),    
 ]
