@@ -10,6 +10,7 @@ from rest_framework.renderers import JSONRenderer, TemplateHTMLRenderer
 from django.core import serializers
 from django.views.decorators.csrf import csrf_exempt, csrf_protect
 import json
+from pprint import pprint
 
 
 class NodeFrameCreate(CreateView):
@@ -47,26 +48,26 @@ def detail(request, node_frame_id):
 
 @csrf_exempt
 def new(request):
-	if True | ( request.method == 'POST' ):
-		json_data = json.loads(request.body.decode('utf-8'))
-		try:
+    if True | ( request.method == 'POST' ):
+        json_data = json.loads(request.body.decode('utf-8'))
+        try:
                     node_name = json_data['name']
                     p = NodeFrame(name=node_name)
                     p.save()
 
                     got = NodeFrame.objects.filter(pk=p.pk)
-		except KeyError:
-			return HttpResponseServerError("Malformed Data, missing key")
-		return JsonResponse(serializers.serialize('json', got), safe=False)
+        except KeyError:
+            return HttpResponseServerError("Malformed Data, missing key")
+        return JsonResponse(serializers.serialize('json', got), safe=False)
 
-	else:
-		return HttpResponse("Only JSON post accepted", status=404)
+    else:
+        return HttpResponse("Only JSON post accepted", status=404)
             
 @csrf_exempt
 def update(request, pk):
-	if True | ( request.method == 'PUT' ):
-		json_data = json.loads(request.body.decode('utf-8'))
-		try:
+    if True | ( request.method == 'PUT' ):
+        json_data = json.loads(request.body.decode('utf-8'))
+        try:
                     keep = ['name', 'content']
                     update_kept = {k: json_data.get(k) for k in keep}
                     p = NodeFrame.objects.get(pk=pk)
@@ -78,68 +79,72 @@ def update(request, pk):
                     p.save()
 
                     got = [NodeFrame.objects.get(pk=pk)]
-		except KeyError:
-			return HttpResponseServerError("Malformed Data, missing key")
+        except KeyError:
+            return HttpResponseServerError("Malformed Data, missing key")
                 #return JsonResponse({"code": 200, "msg": "successful update"}) 
-		return JsonResponse(serializers.serialize('json', got), safe=False)
-	else:
-		return HttpResponse("Only JSON post accepted", status=404)
+        return JsonResponse(serializers.serialize('json', got), safe=False)
+    else:
+        return HttpResponse("Only JSON post accepted", status=404)
             
 @csrf_exempt
 def make(request):
-	if True | ( request.method == 'POST' ):
-		json_data = json.loads(request.body.decode('utf-8'))
-		try:
+    if True | ( request.method == 'POST' ):
+        json_data = json.loads(request.body.decode('utf-8'))
+        try:
                     node_name = json_data['name']
                     p = NodeFrame(name=node_name)
                     p.save()
                     got = NodeFrame.objects.get(pk=p.pk)
-		except KeyError:
-			return HttpResponseServerError("Malformed Data, missing key")
-		return JsonResponse(json.dumps(p))
+        except KeyError:
+            return HttpResponseServerError("Malformed Data, missing key")
+        return JsonResponse(json.dumps(p))
 
-	else:
-		return HttpResponse("Only JSON post accepted", status=404)
+    else:
+        return HttpResponse("Only JSON post accepted", status=404)
 
 @csrf_exempt
 def delete(request, pk):
-	if True | ( request.method == 'POST' ):
+    if True | ( request.method == 'POST' ):
 
-		try:
+        try:
                     p = NodeFrame(pk=pk)
                     p.delete()
-		except KeyError:
-			return HttpResponseServerError("Malformed Data, missing key")
-		return JsonResponse({"code": 200, "msg": "successful delete"})
+        except KeyError:
+            return HttpResponseServerError("Malformed Data, missing key")
+        return JsonResponse({"code": 200, "msg": "successful delete"})
 
-	else:
-		return JsonResponse({"Only JSON post accepted"}, status=404)
+    else:
+        return JsonResponse({"Only JSON post accepted"}, status=404)
 
 @csrf_exempt
 def new_arc(request):
-	if True | ( request.method == 'POST' ):
-		json_data = json.loads(request.body.decode('utf-8'))
-		try:
+    if True | ( request.method == 'POST' ):
+        json_data = json.loads(request.body.decode('utf-8'))
+        try:
                     source=json_data['source']
                     sense=json_data['sense']
-                    sink=json_data['sink']                    
-
-                    p = Arc(source, sense, sink)
+                    sink=json_data['sink']
+                    p = Arc(source_id=source, sense_id=sense, sink_id=sink)
+                    print("NEW ARC")
+                    print(source)
+                    print(sense)
+                    print(sink)
+                    print(serializers.serialize('json',[p]))
                     p.save()
 
                     got = Arc.objects.filter(pk=p.pk)
-		except KeyError:
-			return HttpResponseServerError("Malformed Data, missing key")
-		return JsonResponse(serializers.serialize('json', got), safe=False)
+        except KeyError:
+            return HttpResponseServerError("Malformed Data, missing key")
+        return JsonResponse(serializers.serialize('json', got), safe=False)
 
-	else:
-		return HttpResponse("Only JSON post accepted", status=404)
+    else:
+        return HttpResponse("Only JSON post accepted", status=404)
             
 @csrf_exempt
 def update_arc(request, pk):
-	if True | ( request.method == 'PUT' ):
-		json_data = json.loads(request.body.decode('utf-8'))
-		try:
+    if True | ( request.method == 'PUT' ):
+        json_data = json.loads(request.body.decode('utf-8'))
+        try:
                     keep = ['source', 'sense', 'sink']
                     update_kept = {k: json_data.get(k) for k in keep}
 
@@ -153,23 +158,26 @@ def update_arc(request, pk):
 
                     got = [Arc.objects.get(pk=pk)]
 
-		except KeyError:
-			return HttpResponseServerError("Malformed Data, missing key")
-		return JsonResponse(serializers.serialize('json', got), safe=False)
-	else:
-		return HttpResponse("Only JSON post accepted", status=404)
+        except KeyError:
+            return HttpResponseServerError("Malformed Data, missing key")
+        return JsonResponse(serializers.serialize('json', got), safe=False)
+    else:
+        return HttpResponse("Only JSON post accepted", status=404)
             
 @csrf_exempt
 def delete_arc(request, pk):
-	if True | ( request.method == 'POST' ):
+    if True | ( request.method == 'POST' ):
 
-		try:
+        try:
                     p = Arc(pk=pk)
                     p.delete()
-		except KeyError:
-			return HttpResponseServerError("Malformed Data, missing key")
-		return JsonResponse({"code": 200, "msg": "successful delete"})
+        except KeyError:
+            return HttpResponseServerError("Malformed Data, missing key")
+        return JsonResponse({"code": 200, "msg": "successful delete"})
 
-	else:
-		return JsonResponse({"Only JSON post accepted"}, status=404)
+    else:
+        return JsonResponse({"Only JSON post accepted"}, status=404)
             
+def debuggo(request):
+    arc = Arc.full_arc();
+    pprint(arc)

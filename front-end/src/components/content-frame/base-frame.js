@@ -66,8 +66,8 @@ function assign_base_handlers({app_data, full_frame, base_frame, setter}) {
         });
     } else if (app_data.mode === App.TIE_MODE) {
         return new_base_frame.with_on_click({
-            on_click: () => {
-                Tie.base_tie_on_click({full_frame, base_frame, app_data, setter});
+            on_click: (event) => {
+                Tie.base_tie_on_click({event, full_frame, base_frame, app_data, setter});
             }
         });
     }

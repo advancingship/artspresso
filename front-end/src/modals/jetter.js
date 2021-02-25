@@ -26,4 +26,5 @@ export {
     left_when_middle_is,
     top_when_middle_is,
     PX,
+    FIXED
 }

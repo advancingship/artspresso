@@ -5,6 +5,7 @@ import Arc from "../components/arc";
 
 function full_jet_on_mouse_move({app_data, event, full_frame}) {
     if (app_data.arrange_frame) {
+        app_data.arrange_frame.style.position = Jetter.FIXED;
         const left = Jetter.left_when_middle_is(
             {x: event.pageX, half_width: BaseFrame.HALF_BASE_WIDTH}
         );

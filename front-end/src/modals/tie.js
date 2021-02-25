@@ -3,6 +3,7 @@ import Arc from "../components/arc";
 import {BaseFrame} from "../components/content-frame";
 import {DefaultNodeFrame, NodeFrame} from "../components/node-frame";
 import {FrameService} from "../frame-service";
+import {Jetter} from "../modals"
 
 function tie_base_frames({source, sink, full_frame, setter}) {
     let success = async (data) => {
@@ -29,9 +30,19 @@ function tie_base_frames({source, sink, full_frame, setter}) {
     FrameService.create_frame({terms: {success, body: {name: ""}}})
 }
 
-function base_tie_on_click({full_frame, base_frame, app_data, setter}) {
+function base_tie_on_click({event, full_frame, base_frame, app_data, setter}) {
     if (!app_data.tie_source) {
-        app_data.tie_source = base_frame
+        const left = Jetter.left_when_middle_is(
+            {x: event.pageX, half_width: BaseFrame.HALF_BASE_WIDTH}
+        );
+        const top = Jetter.top_when_middle_is(
+            {y: event.pageY, half_height: BaseFrame.HALF_BASE_HEIGHT}
+        );
+        app_data.tie_source = BaseFrame.brew({
+            model: base_frame.get_model(),
+            left: left,
+            top: top,
+        })
     } else {
         const source = app_data.tie_source;
         const sink = base_frame;
