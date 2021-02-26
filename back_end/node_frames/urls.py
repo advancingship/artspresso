@@ -30,5 +30,5 @@ urlpatterns = [
     path('new_arc/', views.new_arc, name='arc-new'),
     path('<int:pk>/update_arc/', views.update_arc, name='arc-update'),
     path('<int:pk>/delete_arc/', views.delete_arc, name='arc-delete'),
-    path('debuggo/', views.debuggo, name='debuggo')
+    path('<int:pk>/debuggo/', views.debuggo, name='debuggo')
 ]

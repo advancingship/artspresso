@@ -178,6 +178,7 @@ def delete_arc(request, pk):
     else:
         return JsonResponse({"Only JSON post accepted"}, status=404)
             
-def debuggo(request):
-    arc = Arc.full_arc();
+def debuggo(request, pk):
+    arc = Arc.full_arc(pk);
     pprint(arc)
+    return JsonResponse(serializers.serialize('json', [arc]), safe=False)
