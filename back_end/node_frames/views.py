@@ -8,6 +8,7 @@ from rest_framework.response import Response
 from rest_framework.decorators import api_view, renderer_classes
 from rest_framework.renderers import JSONRenderer, TemplateHTMLRenderer
 from django.core import serializers
+from rest_framework.serializers import ModelSerializer
 from django.views.decorators.csrf import csrf_exempt, csrf_protect
 import json
 from pprint import pprint
@@ -177,8 +178,17 @@ def delete_arc(request, pk):
 
     else:
         return JsonResponse({"Only JSON post accepted"}, status=404)
-            
+
+class ArcSerializer(ModelSerializer):
+    class Meta:
+        model = Arc
+        depth = 3
+        fields = '__all__'
+
 def debuggo(request, pk):
     arc = Arc.full_arc(pk);
+    serializer = ArcSerializer(arc)
     pprint(arc)
-    return JsonResponse(serializers.serialize('json', [arc]), safe=False)
+    return JsonResponse(serializer.data, safe=False)
+
+#debuggo(None, 17890)
