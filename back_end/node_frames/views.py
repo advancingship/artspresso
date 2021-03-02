@@ -185,10 +185,18 @@ class ArcSerializer(ModelSerializer):
         depth = 3
         fields = '__all__'
 
-def debuggo(request, pk):
+def return_full_arc(request, pk):
     arc = Arc.full_arc(pk);
-    serializer = ArcSerializer(arc)
+    arc_serializer = ArcSerializer(arc)
+    serializer = arc_serializer
     pprint(arc)
     return JsonResponse(serializer.data, safe=False)
+
+def return_full_arc_2():
+    return None
+
+def debuggo(request, pk):
+    return return_full_arc(request, pk)
+    #return_full_arc_2()
 
 #debuggo(None, 17890)

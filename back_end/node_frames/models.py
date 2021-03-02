@@ -8,6 +8,7 @@ class NodeFrame(models.Model):
     content = models.TextField()
     creation_datetime = models.DateTimeField(auto_now_add=True, editable=False)
     modification_datetime = models.DateTimeField(auto_now=True)
+
     
 
     def get_absolute_url(self):
@@ -26,7 +27,7 @@ def dictfetchall(cursor):
 
 
 class Arc(models.Model):
-    source = models.ForeignKey(NodeFrame, on_delete=models.CASCADE)
+    source = models.ForeignKey(NodeFrame, on_delete=models.CASCADE, related_name="arcs")
     sense = models.ForeignKey(NodeFrame, on_delete=models.SET_NULL, related_name="senses", null=True)
     sink = models.ForeignKey(NodeFrame, on_delete=models.SET_NULL, related_name="sinks", null=True)
     creation_datetime = models.DateTimeField(auto_now_add=True, editable=False)
@@ -39,11 +40,12 @@ class Arc(models.Model):
             node_prefixes = ['source_', 'sense_', 'sink_']
             nodes_prefixed = [p + f for p in node_prefixes for f in node_fields]
             fields_as = ', '.join([p + '.' + f + ' as ' + p + f for p in node_prefixes for f in node_fields])
-            query = "select " + fields_as + " from node_frames_arc a " \
-                                            "left join node_frames_nodeframe as source_ on a.source_id=source_.id " \
-                                            "left join node_frames_nodeframe sense_ on a.sense_id=sense_.id " \
-                                            "left join node_frames_nodeframe sink_ on a.sink_id=sink_.id " \
-                                            "where a.id=" + str(pk)
+            query_string = """select {0} from node_frames_arc a 
+            left join node_frames_nodeframe as source_ on a.source_id=source_.id
+            left join node_frames_nodeframe sense_ on a.sense_id=sense_.id
+            left join node_frames_nodeframe sink_ on a.sink_id=sink_.id
+            where a.id={1}"""
+            query = query_string.format(fields_as, str(pk))
             cursor.execute(query)
             dictfetch = dictfetchall(cursor)
             d = dictfetch[0]
@@ -57,3 +59,8 @@ class Arc(models.Model):
                                creation_datetime=d['sink_creation_datetime'],
                                modification_datetime=d['sink_modification_datetime'])
             return Arc(source=source, sense=sense, sink=sink)
+
+
+    @classmethod
+    def full_arc_2(cls, pk):
+        return None
