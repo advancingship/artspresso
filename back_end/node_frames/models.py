@@ -63,4 +63,15 @@ class Arc(models.Model):
 
     @classmethod
     def full_arc_2(cls, pk):
-        return None
+        with connection.cursor() as cursor:
+            query = '''WITH RECURSIVE top_arcs(source_id, sense_id, sink_id) as (
+                select source_id, sense_id, sink_id from node_frames_arc where source_id=17791
+              union
+                select na.source_id, na.sense_id, na.sink_id from top_arcs ta, node_frames_arc na where na.source_id=ta.sense_id)
+            select source_.name, sense_.name, sink_.name from top_arcs a
+              left join node_frames_nodeframe as source_ on a.source_id = source_.id
+              left join node_frames_nodeframe as sense_  on a.sense_id = sense_.id
+              left join node_frames_nodeframe as sink_ on a.sink_id = sink_.id;
+            '''
+            dictfetch = dictfetchall(cursor)
+            return dictfetch[0]
