@@ -3,6 +3,8 @@ from django.utils import timezone
 from django.urls import reverse
 from django.db import connection
 
+from pprint import pprint
+
 class NodeFrame(models.Model):
     name = models.CharField(max_length=72)
     content = models.TextField()
@@ -38,7 +40,7 @@ class Arc(models.Model):
         with connection.cursor() as cursor:
             node_fields = [f.name for f in NodeFrame._meta.fields]
             node_prefixes = ['source_', 'sense_', 'sink_']
-            nodes_prefixed = [p + f for p in node_prefixes for f in node_fields]
+            # nodes_prefixed = [p + f for p in node_prefixes for f in node_fields]
             fields_as = ', '.join([p + '.' + f + ' as ' + p + f for p in node_prefixes for f in node_fields])
             query_string = """select {0} from node_frames_arc a 
             left join node_frames_nodeframe as source_ on a.source_id=source_.id
@@ -61,17 +63,52 @@ class Arc(models.Model):
             return Arc(source=source, sense=sense, sink=sink)
 
 
+    # @classmethod
+    # def full_arc_2(cls, pk):
+    #     with connection.cursor() as cursor:
+    #         node_fields = [f.name for f in NodeFrame._meta.fields]
+    #         node_prefixes = ['source_', 'sense_', 'sink_']
+    #         nodes_prefixed = ', '.join([p + f for p in node_prefixes for f in node_fields])
+    #         fields_as = ', '.join([p + '.' + f + ' as ' + p + f for p in node_prefixes for f in node_fields])
+    #         query_string = '''WITH RECURSIVE top_arcs(source_id, sense_id, sink_id) as (
+    #             select source_id, sense_id, sink_id from node_frames_arc where source_id={0}
+    #           union
+    #             select na.source_id, na.sense_id, na.sink_id from top_arcs ta, node_frames_arc na
+    #             where na.source_id=ta.sense_id or na.source_id=ta.sink_id)
+    #         select source_.name as source_name, sense_.name as sense_name, sink_.name as sink_name from top_arcs a
+    #           left join node_frames_nodeframe as source_ on a.source_id = source_.id
+    #           left join node_frames_nodeframe as sense_  on a.sense_id = sense_.id
+    #           left join node_frames_nodeframe as sink_ on a.sink_id = sink_.id;
+    #         '''
+    #         query = query_string.format(str(pk))
+    #         cursor.execute(query)
+    #         dictfetch = dictfetchall(cursor)
+    #         return dictfetch
+
+
     @classmethod
     def full_arc_2(cls, pk):
         with connection.cursor() as cursor:
-            query = '''WITH RECURSIVE top_arcs(source_id, sense_id, sink_id) as (
-                select source_id, sense_id, sink_id from node_frames_arc where source_id=17791
+            node_fields = [f.name for f in NodeFrame._meta.fields]
+            node_prefixes = ['source_', 'sense_', 'sink_']
+            nodes_prefixed = ', '.join([p + f for p in node_prefixes for f in node_fields])
+            fields_as = ', '.join([p + '.' + f + ' as ' + p + f for p in node_prefixes for f in node_fields])
+            arc_fields = ['id', 'source_id', 'sense_id', 'sink_id', 'creation_datetime', 'modification_datetime']
+            arc_fields_string = ', '.join(arc_fields)
+            arc_prefix = 'na.'
+            arc_fields_prefixed = ', '.join([arc_prefix + f for f in arc_fields])
+            query_string = '''WITH RECURSIVE
+            top_arcs({0}) as (
+                select {0} from node_frames_arc where source_id={1}
               union
-                select na.source_id, na.sense_id, na.sink_id from top_arcs ta, node_frames_arc na where na.source_id=ta.sense_id)
-            select source_.name, sense_.name, sink_.name from top_arcs a
-              left join node_frames_nodeframe as source_ on a.source_id = source_.id
-              left join node_frames_nodeframe as sense_  on a.sense_id = sense_.id
-              left join node_frames_nodeframe as sink_ on a.sink_id = sink_.id;
+                select {2} from top_arcs ta, node_frames_arc na 
+                where na.source_id=ta.sense_id or na.source_id=ta.sink_id)
+            select * from top_arcs a
             '''
+            query = query_string.format(arc_fields_string, str(pk), arc_fields_prefixed)
+            cursor.execute(query)
             dictfetch = dictfetchall(cursor)
-            return dictfetch[0]
+            arcs = [Arc(id=d['id'], source_id=d['source_id'], sense_id=d['sense_id'], sink_id=d['sink_id'],
+                        creation_datetime=d['creation_datetime'], modification_datetime=d['modification_datetime'])
+                    for d in dictfetch]
+            return arcs
