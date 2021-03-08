@@ -126,11 +126,6 @@ def new_arc(request):
             sense = json_data['sense']
             sink = json_data['sink']
             p = Arc(source_id=source, sense_id=sense, sink_id=sink)
-            print("NEW ARC")
-            print(source)
-            print(sense)
-            print(sink)
-            print(serializers.serialize('json', [p]))
             p.save()
 
             got = Arc.objects.filter(pk=p.pk)
@@ -168,14 +163,12 @@ def update_arc(request, pk):
 @csrf_exempt
 def delete_arc(request, pk):
     if True | (request.method == 'POST'):
-
         try:
             p = Arc(pk=pk)
             p.delete()
         except KeyError:
             return HttpResponseServerError("Malformed Data, missing key")
         return JsonResponse({"code": 200, "msg": "successful delete"})
-
     else:
         return JsonResponse({"Only JSON post accepted"}, status=404)
 
@@ -191,15 +184,8 @@ class NodeFrameSerializer(ModelSerializer):
         depth = 0
         fields = '__all__'
 
-def return_full_arc(request, pk):
-    arc = Arc.full_arc(pk)
-    arc_serializer = ArcSerializer(arc)
-    serializer = arc_serializer
-    pprint(arc)
-    return JsonResponse(serializer.data, safe=False)
-
-def return_full_arc_2(request, pk):
-    arcs = Arc.full_arc_2(pk)
+def get_associated_graph(request, pk):
+    arcs = Arc.get_associates(pk)
     node_frame_id_set = set()
     for arc in arcs:
         node_frame_id_set.add(arc.source_id)
@@ -210,11 +196,5 @@ def return_full_arc_2(request, pk):
     arc_serializer = ArcSerializer(arcs, many=True)
     node_frame_serializer = NodeFrameSerializer(node_frames, many=True)
 
-    pprint(arc)
     return JsonResponse({'arcs': arc_serializer.data, 'node_frames': node_frame_serializer.data}, safe=False)
 
-def debuggo(request, pk):
-    # return return_full_arc(request, pk)
-    return return_full_arc_2(request, pk)
-
-# debuggo(None, 17791)
