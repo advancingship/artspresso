@@ -1,10 +1,10 @@
 import {Identifiable, Nameable, ContentEditable, Timestamped, ModelViewable} from "../../modals";
 
 export function brew({terms}) {
-    if (terms && terms.pk) {
-        const pk = terms.pk
-        terms = terms.fields;
-        terms.identity = pk;
+    if (terms && terms.id) {
+        const id = terms.id
+        //terms = terms.fields;
+        terms.identity = id;
     }
     return Object.freeze({
         ...Identifiable.brew({terms, brewer: brew}),

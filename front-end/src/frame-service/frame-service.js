@@ -27,7 +27,13 @@ async function do_get({terms}) {
     const api_terms = brew_api_terms({terms: {...terms, method: GET}});
     return await fetch((api_terms.api || API) + api_terms.path, api_terms.init)
         .then(response => response.json())
-        .then(json => JSON.parse(json))
+        .then(json => {
+            try {
+                return JSON.parse(json)
+            } catch (e) {
+                return json;
+            }
+        })
         .then(
             api_terms.success,
             api_terms.error
@@ -92,6 +98,12 @@ async function create_arc({terms}) {
     return do_post({terms});
 }
 
+async function find_associates({terms}) {
+    terms = terms || {};
+    terms.path = "/frames/" + terms.pk + "/associates/"
+    return do_get({terms});
+}
+
 export {
     API,
     pop_frames,
@@ -99,4 +111,5 @@ export {
     update_frame,
     delete_frame,
     create_arc,
+    find_associates,
 }

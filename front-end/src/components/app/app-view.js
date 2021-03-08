@@ -23,12 +23,27 @@ function AppView() {
     //}
     function latest_workspace({mode, frames}) {
         let arcs;
+        const node_frame_map = {};
         if (frames) {
-            arcs = frames.map(terms => {
+            frames.node_frames.forEach(terms => {
+                const node_frame = BaseFrame.brew({model: NodeFrame.brew({terms})})
+                node_frame_map[terms.id] = node_frame;
+            });
+            frames.arcs.forEach(terms => {
+                const source_id= terms.source;
+                const sense_id= terms.sense;
+                const sink_id= terms.sink;
+                const source = node_frame_map[source_id];
+                const sense = node_frame_map[sense_id];
+                const sink = node_frame_map[sink_id];
+                const arc = Arc.brew({terms: {sense, sink}} )
+                node_frame_map[source_id] = source.with_arc({arc});
+            })
+            arcs = Object.values(node_frame_map).map(node_frame => {
                 return Arc.brew({terms: {
                         sense: Arc.HAVE_PART,
-                        sink: BaseFrame.brew({model: NodeFrame.brew({terms})})
-                    }})
+                        sink: node_frame,
+                    }});
             });
         }
         return FullFrame.brew({
@@ -49,7 +64,8 @@ function AppView() {
 
     function top_on_click() {
         console.log("TOP ON CLICK")
-        FrameService.pop_frames({terms: {success}});
+        FrameService.find_associates({terms: {pk: "17791", success}})
+        //FrameService.pop_frames({terms: {success}});
         //FrameService.create_frame({terms: {body: {name: "fake"}, success }})
     }
 
