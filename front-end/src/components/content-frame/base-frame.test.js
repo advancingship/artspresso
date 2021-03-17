@@ -4,6 +4,7 @@ import Arc from "../arc";
 import {Me} from "../../helpers";
 import {BaseFrame} from "../content-frame";
 import {App} from "../app";
+import {FrameService} from "../../frame-service";
 
 describe("assign_base_handlers", () => {
     let child_a, child_b, child_c, part_id, setter;
@@ -15,11 +16,11 @@ describe("assign_base_handlers", () => {
         setter = jest.fn();
     });
     describe("pass a delete-mode app-data, a full-frame, a base-frame, and the state-setter ", () => {
-        it ("sets to base_pluck_on_click", () => {
+        it ("calls frame-service to delete the frame", () => {
             const app_data = {mode: App.PLUCK_MODE};
             const full_frame = ContentFrame.brew({
                 terms: {
-                    model: Me.brew({terms: {arcs: [{sink: {}},{sink: {}},{sink: {}}]}}),
+                    model: Me.brew({terms: {arcs: [{sink: {}},{sink: {}},{sink: {}}], get_identity: () => null}}),
                     arcs: [
                         Arc.brew({terms: {sense: Whole.HAVE_PART, sink: child_a}}),
                         Arc.brew({terms: {sense: Whole.HAVE_PART, sink: child_b}}),
@@ -28,10 +29,10 @@ describe("assign_base_handlers", () => {
                 },
                 mixins: [Whole.brew]
             });
-            const on_click = jest.spyOn(Pluck, "base_pluck_on_click");
+            const on_click = jest.spyOn(FrameService, "delete_frame");
             const new_base_frame = BaseFrame.assign_base_handlers({app_data, full_frame, base_frame: child_b, setter});
             new_base_frame.get_on_click()();
-            expect(on_click).toBeCalledWith({full_frame, part_id, setter});
+            expect(on_click).toBeCalled();
         });
     });
     describe("pass an arrange-mode app-data, a base content_frame and state-setter ", () => {

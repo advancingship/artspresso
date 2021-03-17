@@ -4,7 +4,7 @@ export function brew({terms, mixins}) {
     const brewer = brew;
     const mix = Me.get_mix({terms, mixins, brewer});
     const back = {...terms, ...mix};
-    const identity = back.model ? back.model.get_identity() : back.id;
+    const identity = back.arc_id ? back.arc_id : back.model ? back.model.get_identity() : back.id;
     back.arcs = terms.arcs || []
     const front = {
         signature: identity,

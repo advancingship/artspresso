@@ -29,6 +29,10 @@ function AppView() {
                 const node_frame = BaseFrame.brew({model: NodeFrame.brew({terms})})
                 node_frame_map[terms.id] = node_frame;
             });
+            //commented code here was a start at having duplicated content-frames
+            //for sense nodes when used for more than one arc
+            //const arc_map = {}
+            //const senses = [];
             frames.arcs.forEach(terms => {
                 const source_id= terms.source;
                 const sense_id= terms.sense;
@@ -37,6 +41,8 @@ function AppView() {
                 const sense = node_frame_map[sense_id];
                 const sink = node_frame_map[sink_id];
                 const arc = Arc.brew({terms: {sense, sink}} )
+                //senses.push(BaseFrame.brew({arc_id: terms.id, model: sense.get_model()}))
+                //arc_map[sense_id] = terms;
                 node_frame_map[source_id] = source.with_arc({arc});
             })
             arcs = Object.values(node_frame_map).map(node_frame => {

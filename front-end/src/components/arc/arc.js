@@ -5,7 +5,7 @@ const LEFT = "left";
 const RIGHT = "right"
 
 const brew = function ({terms}) {
-    if (terms && terms.pk) {
+    if (terms.fields && terms.pk) {
         const pk = terms.pk
         terms = terms.fields;
         terms.identity = pk;
@@ -38,7 +38,7 @@ function arc_line({left_frame, right_frame}) {
     const y_delta = end_y - start_y;
     const hypotenuse = Math.round( Math.sqrt( Math.pow(x_delta, 2) + Math.pow(y_delta, 2)));
     const angle = Math.atan2((y_delta), (x_delta)) *  (180/Math.PI);
-    const source_sink_string = "source_" + left_frame.get_id() + " sink_"+right_frame.get_id();
+    const source_sink_string = "source_" + left_frame.get_model().get_identity() + " sink_"+right_frame.get_model().get_identity();
     return {
         className: source_sink_string,
         style: {

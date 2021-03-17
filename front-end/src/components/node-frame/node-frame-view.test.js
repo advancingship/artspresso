@@ -104,21 +104,18 @@ describe("<NodeFrameView/> Component", () => {
 	});
 	describe("pass a content-frame bearing nodes connected by an arc", () => {
 		let node_a, node_b, sense_ab, arc_ab, part_arc_a, part_arc_b, part_arc_sense_ab, full_node;
-		function wait() {console.log("stalling to keep date-based id's unique (needed in automated creation")}
 		beforeEach(() => {
 			node_b = BaseFrame.brew({
-				model: DefaultNodeFrame.brew(),
+				model: NodeFrame.brew({terms: {id: "node_b"}}),
 				left: 101, top: 153,
 			});
-			wait();
 			sense_ab = BaseFrame.brew({
-				model: DefaultNodeFrame.brew(),
+				model: NodeFrame.brew({terms: {id: "sense_ab"}}),
 				left: 161, top: 123,
 			});
-			wait();
-			arc_ab = Arc.brew({terms: {sense: sense_ab, sink: node_b}});
+			arc_ab = Arc.brew({terms: {identity: "arc_ab", sense: sense_ab, sink: node_b}});
 			node_a = BaseFrame.brew({
-				model: DefaultNodeFrame.brew(),
+				model: NodeFrame.brew({terms: {id: "node_a"}}),
 				left: 191, top: 133,
 				arcs: [arc_ab],
 			});
