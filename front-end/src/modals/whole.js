@@ -14,6 +14,11 @@ function brew({terms, mixins, brewer = brew}) {
     });
 }
 
+/*
+terms.part_sense indicates another sense should be used instead of have_part
+as a relationship represented with the source node visibly containing the sink node
+rather than the source-node visibly pointing to the sink-node via arc-lines
+ */
 function get_part_sense(terms) {
     return terms.part_sense || HAVE_PART;
 }

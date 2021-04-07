@@ -1,4 +1,6 @@
 import pytest
+from django.test import override_settings
+
 from node_frames.models import NodeFrame, Arc
 
 @pytest.mark.django_db()
@@ -64,3 +66,44 @@ def test_get_associates():
 
     #no repeated arcs in result
     assert(len(result_pks) == len(set(result_pks)))
+
+
+@pytest.mark.django_db()
+@override_settings(DEBUG=True)
+def test_on_delete_sink_set_null():
+    noun_a = NodeFrame(name="noun_a")
+    noun_b = NodeFrame(name="noun_b")
+    noun_c = NodeFrame(name="noun_c")
+    verb_a = NodeFrame(name="verb_a")
+    verb_b = NodeFrame(name="verb_b")
+
+    arc_a = Arc(source=noun_a, sense=verb_a, sink=noun_b)
+    arc_b = Arc(source=noun_c, sense=verb_b, sink=noun_b)
+
+    test_models = [noun_a, noun_b, noun_c, verb_a, verb_b, arc_a, arc_b]
+
+    for o in test_models:
+        o.save()
+
+    noun_b.delete()
+
+    arc_a = Arc.objects.get(pk=arc_a.pk)
+    arc_b = Arc.objects.get(pk=arc_b.pk)
+    fake_noun_a = NodeFrame()
+    fake_noun_a.pk = noun_a.pk
+    assert (fake_noun_a.name == None)
+    #following assertion of equality shows django model equals compares models by pk only
+    #(assertion of equality will also fail if fake_noun_a is not a NodeFrame)
+    assert (arc_a.source == fake_noun_a)
+    assert (arc_b.source == noun_c)
+
+    #arc.sink on_delete=SET_NULL behaves as expected
+    assert(arc_a.sink == None)
+    assert(arc_b.sink == None)
+
+
+@pytest.mark.django_db()
+@override_settings(DEBUG=True)
+def test_true():
+    assert(True)
+

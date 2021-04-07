@@ -4,8 +4,8 @@ from django.db import connection
 
 
 class NodeFrame(models.Model):
-    name = models.CharField(max_length=72)
-    content = models.TextField()
+    name = models.CharField(max_length=72, null=True)
+    content = models.TextField(null=True)
     creation_datetime = models.DateTimeField(auto_now_add=True, editable=False)
     modification_datetime = models.DateTimeField(auto_now=True)
 
@@ -27,7 +27,7 @@ def map_fetch_all(cursor):
 
 class Arc(models.Model):
     source = models.ForeignKey(NodeFrame, on_delete=models.CASCADE, related_name="arcs")
-    sense = models.ForeignKey(NodeFrame, on_delete=models.SET_NULL, related_name="senses", null=True)
+    sense = models.ForeignKey(NodeFrame, on_delete=models.CASCADE, related_name="senses", null=True)
     sink = models.ForeignKey(NodeFrame, on_delete=models.SET_NULL, related_name="sinks", null=True)
     creation_datetime = models.DateTimeField(auto_now_add=True, editable=False)
     modification_datetime = models.DateTimeField(auto_now=True)

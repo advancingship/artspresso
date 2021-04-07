@@ -16,23 +16,25 @@ describe("assign_base_handlers", () => {
         setter = jest.fn();
     });
     describe("pass a delete-mode app-data, a full-frame, a base-frame, and the state-setter ", () => {
-        it ("calls frame-service to delete the frame", () => {
-            const app_data = {mode: App.PLUCK_MODE};
-            const full_frame = ContentFrame.brew({
-                terms: {
-                    model: Me.brew({terms: {arcs: [{sink: {}},{sink: {}},{sink: {}}], get_identity: () => null}}),
-                    arcs: [
-                        Arc.brew({terms: {sense: Whole.HAVE_PART, sink: child_a}}),
-                        Arc.brew({terms: {sense: Whole.HAVE_PART, sink: child_b}}),
-                        Arc.brew({terms: {sense: Whole.HAVE_PART, sink: child_c}}),
-                    ],
-                },
-                mixins: [Whole.brew]
+        describe("when the base-frame on-click is called", () => {
+            it ("calls frame-service to delete the frame", () => {
+                const app_data = {mode: App.PLUCK_MODE};
+                const full_frame = ContentFrame.brew({
+                    terms: {
+                        model: Me.brew({terms: {arcs: [{sink: {}},{sink: {}},{sink: {}}], get_identity: () => null}}),
+                        arcs: [
+                            Arc.brew({terms: {sense: Whole.HAVE_PART, sink: child_a}}),
+                            Arc.brew({terms: {sense: Whole.HAVE_PART, sink: child_b}}),
+                            Arc.brew({terms: {sense: Whole.HAVE_PART, sink: child_c}}),
+                        ],
+                    },
+                    mixins: [Whole.brew]
+                });
+                const api_delete_frame = jest.spyOn(FrameService, "delete_frame");
+                const new_base_frame = BaseFrame.assign_base_handlers({app_data, full_frame, base_frame: child_b, setter});
+                new_base_frame.get_on_click()();
+                expect(api_delete_frame).toBeCalled();
             });
-            const on_click = jest.spyOn(FrameService, "delete_frame");
-            const new_base_frame = BaseFrame.assign_base_handlers({app_data, full_frame, base_frame: child_b, setter});
-            new_base_frame.get_on_click()();
-            expect(on_click).toBeCalled();
         });
     });
     describe("pass an arrange-mode app-data, a base content_frame and state-setter ", () => {

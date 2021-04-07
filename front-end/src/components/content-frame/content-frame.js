@@ -60,7 +60,7 @@ function with_arc({arc, terms, mixins, brewer}) {
     );
 }
 
-function  without_arc({arc_id, terms, mixins, brewer}) {
+function without_arc({arc_id, terms, mixins, brewer}) {
     return brewer({
         terms: {
             ...terms,

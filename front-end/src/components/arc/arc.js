@@ -1,15 +1,12 @@
 import {ModelViewable, Timestamped, Identifiable} from "../../modals";
+import {get_model_terms} from "../../frame-service/frame-service-model";
 
 const HAVE_PART = Object.freeze({get_id: () => "have_part"});
 const LEFT = "left";
 const RIGHT = "right"
 
 const brew = function ({terms}) {
-    if (terms.fields && terms.pk) {
-        const pk = terms.pk
-        terms = terms.fields;
-        terms.identity = pk;
-    }
+    terms = get_model_terms({terms})
     const left_id = terms.identity + "-" + LEFT;
     const right_id = terms.identity + "-" + RIGHT;
     return Object.freeze({

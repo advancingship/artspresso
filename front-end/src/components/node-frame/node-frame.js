@@ -1,16 +1,8 @@
 import {Identifiable, Nameable, ContentEditable, Timestamped, ModelViewable} from "../../modals";
+import {get_model_terms} from "../../frame-service/frame-service-model";
 
 export function brew({terms}) {
-    if (terms && (terms.pk || terms.id)) {
-        if (terms.pk) {
-            const pk = terms.pk;
-            terms = terms.fields;
-            terms.identity = pk;
-        } else {
-            const id = terms.id;
-            terms.identity = id;
-        }
-    }
+    terms = get_model_terms({terms})
     return Object.freeze({
         ...Identifiable.brew({terms, brewer: brew}),
         ...ModelViewable.brew({terms, brewer: brew}),
